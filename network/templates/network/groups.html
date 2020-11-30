@@ -1,0 +1,15 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    {% if id %}
+        You are viewing group number {{ id }}.<br />
+        Show contents of group here.
+    {% else %}
+        To do.<br />
+        Your groups:<br />
+        (show groups managed by current user)<br />
+        Other groups:<br />
+        (show groups you can join)<br />
+        need to add template tags
+    {% endif %}
+{% endblock %}

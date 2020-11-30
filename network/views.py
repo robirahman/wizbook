@@ -61,3 +61,22 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def pages(request, id=None):
+    if id is not None:
+        return render(request, "network/pages.html", {"id": id})
+    else:
+        return render(request, "network/pages.html")
+
+def groups(request, id=None):
+    if id is not None:
+        return render(request, "network/groups.html", {"id": id})
+    else:
+        return render(request, "network/groups.html")
+
+def events(request, id=None):
+    if id is not None:
+        return render(request, "network/events.html", {"id": id})
+    else:
+        return render(request, "network/events.html")
+

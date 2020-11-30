@@ -6,6 +6,20 @@ Friends
 Events
 Groups
 Messages
-Calendar? Birthdays? Marketplace?
+Calendar, birthdays
 
 
+
+
+
+List of pages needed:
+localhost/ # displays timeline, notifications, links to your groups, contacts, events, messages
+localhost/newsfeed # displays posts from people you are following, upcoming events
+localhost/profile/<str:username> # displays info about user username, including pages they like
+localhost/profile/<str:username>/friends # displays all of their friends. maybe just show friends on their profile?
+localhost/events/<int:id> # display event description and comments
+localhost/groups/<int:id> # display group info and comments
+localhost/pages/ # display list of all pages
+localhost/pages/<int:id> # display page info and comments
+localhost/messages/ # show an inbox like the email project
+localhost/calendar/ # show calendar of upcoming events and the next birthday of each of your friends
