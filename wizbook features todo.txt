@@ -1,4 +1,11 @@
-wizbook
+Fix issues:
+
+Messages don't work.
+div display styles are wrong. need to hide everything except inbox by default.
+rename all mentions of 'email' to 'message'
+
+
+Wizbook
 
 Timeline
 Profiles
@@ -13,13 +20,13 @@ Calendar, birthdays
 
 
 List of pages needed:
-localhost/ # displays timeline, notifications, links to your groups, contacts, events, messages
-localhost/newsfeed # displays posts from people you are following, upcoming events
-localhost/profile/<str:username> # displays info about user username, including pages they like
-localhost/profile/<str:username>/friends # displays all of their friends. maybe just show friends on their profile?
-localhost/events/<int:id> # display event description and comments
-localhost/groups/<int:id> # display group info and comments
-localhost/pages/ # display list of all pages
-localhost/pages/<int:id> # display page info and comments
-localhost/messages/ # show an inbox like the email project
-localhost/calendar/ # show calendar of upcoming events and the next birthday of each of your friends
+network/ # displays timeline, notifications, links to your groups, contacts, events, messages
+network/newsfeed # displays posts from people you are following, comments on groups/events/pages you're following
+network/profile/<str:username> # displays info about user username, including pages they like
+network/profile/<str:username>/friends # displays all of their friends. maybe just show friends on their profile?
+network/events/<int:id> # display event description and comments
+network/groups/<int:id> # display group info and comments
+network/pages/ # display list of all pages
+network/pages/<int:id> # display page info and comments
+network/messages/ # show an inbox like the email project
+network/calendar/ # show calendar of upcoming events and the next birthday of each of your friends

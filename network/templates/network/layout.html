@@ -6,17 +6,26 @@
         <title>{% block title %}Wizbook{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link href="{% static 'network/styles.css' %}" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="{% static 'network/wizardhat.png' %}">
+        <!-- Wizard's Hat by Olly Banham from the Noun Project https://thenounproject.com/term/wizards-hat/200109/ -->
     </head>
     <body>
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <img src="{% static 'network/wizardhat.png' %}" alt="Wizbook" height="20px" />
             <a class="navbar-brand" href="http://127.0.0.1:8000/">Wizbook</a>
           
             <div>
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="http://127.0.0.1:8000/profile/{{ user.username }}"><strong>{{ user.username }}</strong></a>
+                        <a class="nav-link" href="http://127.0.0.1:8000/users/{{ user.username }}"><strong>{{ user.username }}</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'messages' %}">Messages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">News Feed</a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
@@ -26,12 +35,6 @@
                     <a class="nav-link" href="{% url 'events' %}">Events</a>
                 </li>
                 {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Messages</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">News Feed</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'groups' %}">Groups</a>
                     </li>

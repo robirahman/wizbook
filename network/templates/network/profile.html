@@ -5,21 +5,17 @@
 {% endblock %}
 
 {% block body %}
-    <h4>The Latest Magical Happenings</h4>
-    <div id="post-box"><!-- formerly croak-box -->
-        <form id="post-form"><!-- formerly croak-form -->
-            {% csrf_token %}
-            <br />
-            <textarea id="post-body">Write your post here.</textarea>
-            <br />
-            <input type="submit" id="post" /><!-- formerly croak -->
-        </form>
+    {% csrf_token %}
+    <div id="user-info">
+        <h3>{{ username }}'s profile</h3>
+        {% if firstname and lastname %}{{ firstname }} {{ lastname }}<br />{% endif %}
+        {% if profile_pic %}<img src="{{ profile_pic }}" alt="{{ username }}" height="400px" /><br />{% endif %}
+        {% if email %}Email address: {{ email }}<br />{% endif %}
     </div>
     {% if posts %}
         <div id="posts">
             {% for post in posts %}
                 <div class="post">
-                    <img class="smallpic" src="{{ post.author.profile_picture }}" />
                     At {{ post.timestamp }}, <a href="http://127.0.0.1:8000/users/{{ post.author.username }}">{{ post.author.username }}</a> ({{ post.author.first_name }} {{ post.author.last_name }}) wrote:<br />
                     <span id="post{{ post.id}}">{{ post.body }}</span><br />
                     <a class="likes" id="likes{{ post.id }}">{{ post.likes }}</a> users like this.

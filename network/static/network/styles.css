@@ -1,0 +1,48 @@
+a:hover.like, a:hover.edit {
+    text-decoration: none;
+}
+
+div {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+div[data-read='true'], div[data-read='false'] {
+    border-radius: 4px;
+    padding: 5px;
+    border: 1px solid black;
+}
+
+div[data-read='true'] {
+    background-color: darkgray;
+}
+div[data-read='false'] {
+    background-color: white;
+}
+
+#post-box, #edit-box {
+    display: none;
+}
+
+div#user-info {
+    padding: 10px;
+}
+
+div.post {
+    margin: 5px;
+    padding: 10px;
+}
+
+textarea {
+    min-height: 300px;
+}
+
+h4 {
+    margin: 15px;
+}
+
+img.smallpic {
+    float: left;
+    margin-right: 10px;
+    max-height: 75px;
+}

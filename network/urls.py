@@ -10,9 +10,20 @@ urlpatterns = [
     path("register", views.register, name="register"),
 
     path("pages", views.pages, name="pages"),
-    path("pages/<int:id>", views.pages, name="page<int:id>"),
+    path("pages/<int:id>", views.pages, name="view_page"),
     path("groups", views.groups, name="groups"),
-    path("groups/<int:id>", views.groups, name="group<int:id>"),
+    path("groups/<int:id>", views.groups, name="view_group"),
     path("events", views.events, name="events"),
-    path("events/<int:id>", views.events, name="event<int:id>")
+    path("events/<int:id>", views.events, name="view_event"),
+
+    path("users/<str:username>", views.profile, name="view_profile"),
+
+    path("messages", views.messages, name="messages"),
+
+
+
+    # messaging API Routes
+    path("emails", views.compose, name="compose"),
+    path("emails/<int:email_id>", views.email, name="email"),
+    path("emails/<str:mailbox>", views.mailbox, name="mailbox"),
 ]

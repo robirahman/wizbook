@@ -4,7 +4,7 @@ from django.db import models
 
 class User(AbstractUser):
     profile_picture = models.TextField(blank=True) # Need to add a field to registration form that takes this as input.
-    birthday = models.DateField(blank=True, auto_now_add=False) # Need to ask this upon registration.
+    # birthday = models.DateField(blank=True, auto_now_add=False) # Need to ask this upon registration.
     
     def __str__(self):
         return "User: " + str(self.username)
@@ -15,16 +15,17 @@ class Friendship(models.Model):
     friend2 = models.ForeignKey("User", on_delete=models.CASCADE, related_name="people_friended")
     
     def __str__(self):
-        return str(self.friend1) + " friended " + str(self.friend2)
+        return str(self.friend1.username) + " friended " + str(self.friend2.username)
 
 
 class Message(models.Model):
     sender = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sender")
     recipient = models.ForeignKey("User", on_delete=models.CASCADE, related_name="recipient")
+    subject = models.CharField(blank=True, max_length=50)
     body = models.TextField(blank=True)
 
     def __str__(self):
-        return str(self.sender) + " wrote to " + str(self.recipient) + ": " + str(self.body)[:30]
+        return str(self.sender.username) + " wrote to " + str(self.recipient.username) + "about" + str(self.subject)[:30]
 
 
 
@@ -44,7 +45,7 @@ class Post(models.Model):
     body = models.TextField(blank=True)
 
     def __str__(self):
-        return str(self.author) + " wrote: " + str(self.body)[:30]
+        return str(self.author.username) + " wrote: " + str(self.body)[:30]
 
 class Event(models.Model):
     name = models.CharField(unique=True, max_length=50)
@@ -84,10 +85,11 @@ class Group_Member(models.Model):
 
 class Comment(models.Model):
     author = models.ForeignKey("User", on_delete=models.CASCADE, related_name="comments_written")
-    page = models.ForeignKey("Page", on_delete=models.CASCADE, related_name="page_comments")
-    post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name="post_comments")
-    event = models.ForeignKey("Event", on_delete=models.CASCADE, related_name="event_comments")
-    group = models.ForeignKey("Group", on_delete=models.CASCADE, related_name="group_comments")
+    body = models.TextField(blank=True)
+    page = models.ForeignKey("Page", on_delete=models.CASCADE, related_name="page_comments", blank=True, null=True)
+    post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name="post_comments", blank=True, null=True)
+    event = models.ForeignKey("Event", on_delete=models.CASCADE, related_name="event_comments", blank=True, null=True)
+    group = models.ForeignKey("Group", on_delete=models.CASCADE, related_name="group_comments", blank=True, null=True)
 
     def __str__(self):
         return str(self.author) + " wrote a comment." # need to get text of comment
@@ -95,9 +97,9 @@ class Comment(models.Model):
 
 class Like(models.Model):
     liker = models.ForeignKey("User", on_delete=models.CASCADE, related_name="likes_given")
-    page = models.ForeignKey("Page", on_delete=models.CASCADE, related_name="page_likes")
-    post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name="post_likes")
-    comment = models.ForeignKey("Comment", on_delete=models.CASCADE, related_name="comment_likes")
+    page = models.ForeignKey("Page", on_delete=models.CASCADE, related_name="page_likes", blank=True, null=True)
+    post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name="post_likes", blank=True, null=True)
+    comment = models.ForeignKey("Comment", on_delete=models.CASCADE, related_name="comment_likes", blank=True, null=True)
 
     def __str__(self):
         return str(self.liker) + " liked something." # need to get name or contents of liked object
