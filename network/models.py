@@ -64,6 +64,7 @@ class Post(models.Model):
         return str(self.author.username) + " wrote: " + str(self.body)[:30]
 
 class Event(models.Model):
+    owner = models.ForeignKey("User", on_delete=models.CASCADE, related_name="events_owned")
     name = models.CharField(unique=True, max_length=50)
     date = models.DateTimeField(auto_now_add=False)
     place = models.TextField(blank=True)
@@ -83,6 +84,7 @@ class Event_Attendee(models.Model):
 
 
 class Group(models.Model):
+    owner = models.ForeignKey("User", on_delete=models.CASCADE, related_name="groups_owned")
     name = models.CharField(unique=True, max_length=50)
     description = models.TextField(blank=True)
     picture = models.TextField(blank=True)

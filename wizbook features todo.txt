@@ -19,6 +19,9 @@ Calendar, birthdays
 
 
 
+List of pages implemented:
+
+
 List of pages needed:
 network/ # displays timeline, notifications, links to your groups, contacts, events, messages
 network/newsfeed # displays posts from people you are following, comments on groups/events/pages you're following
@@ -34,26 +37,3 @@ network/calendar/ # show calendar of upcoming events and the next birthday of ea
 
 
 Content to add:
-
-
-Posts:
-
-robirahman
-I'm a muggle.
-
-Daily Prophet
-Dark Mark Sparks Panic at Quidditch World Cup
-
-pages:
-Weasley's Wizard Wheezes
-Whizbangs on sale, only six sickles!
-
-groups:
-Death Eaters
-HeWhoMustNotBeUsernamed
-There is no good and evil. There is only power... and those too weak to seek it.
-
-events:
-Yule Ball
-comment by Cedric Diggory "I'm going with Cho Chang"
-comment by Hermione Granger "See you at the ball, Viktor!"
