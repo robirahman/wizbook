@@ -19,13 +19,29 @@ class Friendship(models.Model):
 
 
 class Message(models.Model):
-    sender = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sender")
-    recipient = models.ForeignKey("User", on_delete=models.CASCADE, related_name="recipient")
+    owner = models.ForeignKey("User", on_delete=models.CASCADE, related_name="messages")
+    sender = models.ForeignKey("User", on_delete=models.PROTECT, related_name="messages_sent")
+    recipients = models.ManyToManyField("User", related_name="messages_received")
     subject = models.CharField(blank=True, max_length=50)
     body = models.TextField(blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+    archived = models.BooleanField(default=False)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "sender": self.sender.email,
+            "recipients": [user.email for user in self.recipients.all()],
+            "subject": self.subject,
+            "body": self.body,
+            "timestamp": self.timestamp.strftime("%Y %b %d, %H:%M"),
+            "read": self.read,
+            "archived": self.archived
+        }
 
     def __str__(self):
-        return str(self.sender.username) + " wrote to " + str(self.recipient.username) + "about" + str(self.subject)[:30]
+        return str(self.sender.username) + " wrote about " + str(self.subject)[:30]
 
 
 

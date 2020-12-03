@@ -32,7 +32,7 @@ function load_mailbox(mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
 
   // Fetch <mailbox> and get response.json() and emails
-  fetch(`/emails/${mailbox}`)
+  fetch(`/messages/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
     emailsHTML = "";
@@ -64,10 +64,10 @@ function send_email(event) {
   email_subject = document.querySelector("#compose-subject").value;
   email_body = document.querySelector("#compose-body").value;
   
-  const invalid = "Email was not delivered to one or more recipient(s) due to invalid or unregistered address. "
+  const invalid = "Message was not delivered to one or more recipient(s) due to invalid or unregistered address. "
                 + "Please verify the intended destination email address(es) and try again.";
   // POST message to the API to save into database
-  fetch('/emails', {
+  fetch('/compose', {
     method: 'POST',
     body: JSON.stringify({
         recipients: email_recipients,
@@ -89,7 +89,7 @@ function send_email(event) {
 function reply(emailid) {
 
   // Fetch email #emailid
-  fetch(`/emails/${emailid}`)
+  fetch(`/messages/${emailid}`)
   .then(response => response.json())
   .then(email => {
     const recipient = email['sender'];
@@ -118,7 +118,7 @@ function show_email(mailbox, emailid) {
   document.querySelector('#message-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
 
-  fetch(`/emails/${mailbox}`)
+  fetch(`/messages/${mailbox}`)
   .then(response => response.json())
   .then(emails =>{
     var email = Object.values(emails).find(x => x.id == emailid);
@@ -138,14 +138,14 @@ function show_email(mailbox, emailid) {
     document.querySelector('#archive').addEventListener('click', () => archive(email));
     document.querySelector('#reply').addEventListener('click', () => reply(email['id']));              
   });
-  fetch(`/emails/${emailid}`, {
+  fetch(`/messages/${emailid}`, {
     method: 'PUT',
     body: JSON.stringify({read: true})
   });
 }
 
 function archive(email) {
-  fetch(`/emails/${email['id']}`, {
+  fetch(`/messages/${email['id']}`, {
     method: 'PUT',
     body: JSON.stringify({archived: !email['archived']})
   });

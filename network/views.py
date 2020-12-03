@@ -128,7 +128,7 @@ def events(request, id=None):
     else:
         return render(request, "network/events.html")
 
-
+@csrf_exempt # not needed?
 @login_required
 def profile(request, username):
     user = User.objects.filter(username=username)
@@ -155,7 +155,7 @@ def profile(request, username):
 @login_required
 def compose(request):
 
-    # Composing a new email must be via POST
+    # Composing a new message must be via POST
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
 
@@ -178,85 +178,85 @@ def compose(request):
                 "error": f"User with email {email} does not exist."
             }, status=400)
 
-    # Get contents of email
+    # Get contents of message
     subject = data.get("subject", "")
     body = data.get("body", "")
 
-    # Create one email for each recipient, plus sender
+    # Create one message for each recipient, plus sender
     users = set()
     users.add(request.user)
     users.update(recipients)
     for user in users:
         message = Message(
-            user=user,
+            owner=user,
             sender=request.user,
             subject=subject,
             body=body,
             read=user == request.user
         )
-        email.save()
+        message.save()
         for recipient in recipients:
-            email.recipients.add(recipient)
-        email.save()
+            message.recipients.add(recipient)
+        message.save()
 
-    return JsonResponse({"message": "Email sent successfully."}, status=201)
+    return JsonResponse({"message": "Message sent successfully."}, status=201)
 
-
+@csrf_exempt # replace with csrf token
 @login_required
 def mailbox(request, mailbox):
 
-    # Filter emails returned based on mailbox
+    # Filter messages returned based on mailbox
     if mailbox == "inbox":
-        emails = Email.objects.filter(
-            user=request.user, recipients=request.user, archived=False
+        messages = Message.objects.filter(
+            owner=request.user, recipients=request.user, archived=False
         )
     elif mailbox == "sent":
-        emails = Email.objects.filter(
-            user=request.user, sender=request.user
+        messages = Message.objects.filter(
+            owner=request.user, sender=request.user
         )
     elif mailbox == "archive":
-        emails = Email.objects.filter(
-            user=request.user, recipients=request.user, archived=True
+        messages = Message.objects.filter(
+            owner=request.user, recipients=request.user, archived=True
         )
     else:
         return JsonResponse({"error": "Invalid mailbox."}, status=400)
 
-    # Return emails in reverse chronologial order
-    emails = emails.order_by("-timestamp").all()
-    return JsonResponse([email.serialize() for email in emails], safe=False)
+    # Return messages in reverse chronologial order
+    messages = messages.order_by("-timestamp").all()
+    return JsonResponse([message.serialize() for message in messages], safe=False)
 
 
 @csrf_exempt
 @login_required
 def email(request, email_id):
 
-    # Query for requested email
+    # Query for requested message
     try:
-        email = Email.objects.get(user=request.user, pk=email_id)
-    except Email.DoesNotExist:
-        return JsonResponse({"error": "Email not found."}, status=404)
+        message = Message.objects.get(owner=request.user, pk=email_id)
+    except Message.DoesNotExist:
+        return JsonResponse({"error": "Message not found."}, status=404)
 
-    # Return email contents
+    # Return message contents
     if request.method == "GET":
-        return JsonResponse(email.serialize())
+        return JsonResponse(message.serialize())
 
-    # Update whether email is read or should be archived
+    # Update whether message is read or should be archived
     elif request.method == "PUT":
         data = json.loads(request.body)
         if data.get("read") is not None:
-            email.read = data["read"]
+            message.read = data["read"]
         if data.get("archived") is not None:
-            email.archived = data["archived"]
-        email.save()
+            message.archived = data["archived"]
+        message.save()
         return HttpResponse(status=204)
 
-    # Email must be via GET or PUT
+    # Message must be via GET or PUT
     else:
         return JsonResponse({
             "error": "GET or PUT request required."
         }, status=400)
 
-
+@csrf_exempt # add csrf token
 def messages(request):
     return render(request, "network/messages.html")
 
