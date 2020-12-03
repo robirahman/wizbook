@@ -1,8 +1,8 @@
-Fix issues:
+Implement comment replies to posts.
+Implement likes by clicking heart icon.
+Implement edits by clicking pencil icon.
 
-Messages don't work.
-div display styles are wrong. need to hide everything except inbox by default.
-rename all mentions of 'email' to 'message'
+Implement a form where you can create a page, event, or group.
 
 
 Wizbook
@@ -30,3 +30,30 @@ network/pages/ # display list of all pages
 network/pages/<int:id> # display page info and comments
 network/messages/ # show an inbox like the email project
 network/calendar/ # show calendar of upcoming events and the next birthday of each of your friends
+
+
+
+Content to add:
+
+
+Posts:
+
+robirahman
+I'm a muggle.
+
+Daily Prophet
+Dark Mark Sparks Panic at Quidditch World Cup
+
+pages:
+Weasley's Wizard Wheezes
+Whizbangs on sale, only six sickles!
+
+groups:
+Death Eaters
+HeWhoMustNotBeUsernamed
+There is no good and evil. There is only power... and those too weak to seek it.
+
+events:
+Yule Ball
+comment by Cedric Diggory "I'm going with Cho Chang"
+comment by Hermione Granger "See you at the ball, Viktor!"

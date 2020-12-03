@@ -41,7 +41,7 @@ class Message(models.Model):
         }
 
     def __str__(self):
-        return str(self.sender.username) + " wrote about " + str(self.subject)[:30]
+        return str(self.owner.username) + "'s mailbox: " + str(self.sender.username) + " wrote about " + str(self.subject)[:30]
 
 
 
