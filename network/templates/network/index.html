@@ -28,6 +28,10 @@
                     {% else %}
                     <a href="" class="like" id="like{{ post.id }}">❤</a>
                     {% endif %}
+                    <a href="" class="comment" id="comment{{ post.id }}">💬</a>
+                    {% for comment in post.comments %}
+                        <br />{{ comment.author.first_name }} {{ comment.author.last_name }} replied: {{ comment.body }}
+                    {% endfor %}
                 </div>
             {% endfor %}
             <nav aria-label="Page navigation">

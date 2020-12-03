@@ -1,4 +1,4 @@
-a:hover.like, a:hover.edit {
+a:hover.like, a:hover.edit, a:hover.comment {
     text-decoration: none;
 }
 

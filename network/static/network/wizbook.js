@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     try {
-      document.querySelector('#croak').addEventListener('click', writePost);
-      document.querySelector('#new-post').addEventListener('click', showCroakBox);
+      document.querySelector('#post').addEventListener('click', writePost);
+      document.querySelector('#new-post').addEventListener('click', showPostBox);
     } catch(error) {
       console.log("No post form on this page.");
       // console.log(error);
@@ -72,10 +72,10 @@ function saveEdit(event) {
   })
   .then(response => {
     if (response.status === 400) {
-      alert("Croak not saved.");
+      alert("Post not saved.");
     } else {
       response.json();
-      document.querySelector(`#croak${postId}`).innerHTML = postBody;
+      document.querySelector(`#post${postId}`).innerHTML = postBody;
       editBox.style.display = 'none';
     }
   });
@@ -83,19 +83,19 @@ function saveEdit(event) {
   return false;
 }
 
-function showCroakBox(event) {
-    document.querySelector('#croak-box').style.display = 'block';
+function showPostBox(event) {
+    document.querySelector('#post-box').style.display = 'block';
     event.preventDefault();
 }
 
 function showEditBox(event) {
   postId = event.target.id.slice(4);
-  let croakBody = document.querySelector(`#croak${postId}`);
-  document.querySelector('#edit-body').innerHTML = croakBody.innerHTML;
+  let postBody = document.querySelector(`#post${postId}`);
+  document.querySelector('#edit-body').innerHTML = postBody.innerHTML;
   let editAnchor = document.querySelector(`#edit${postId}`);
   let editBox = document.querySelector('#edit-box');
-  const parentCroak = editAnchor.parentElement;
-  parentCroak.append(editBox);
+  const parentPost = editAnchor.parentElement;
+  parentPost.append(editBox);
   editBox.style.display = 'block';
   saveButton = document.querySelector('#save-edit');
   saveButton.addEventListener('click', saveEdit);
