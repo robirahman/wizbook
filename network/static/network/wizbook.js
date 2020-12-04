@@ -27,15 +27,25 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     } catch(error) {
       console.log("No editable posts on this page.");
-      // console.log(error);
     }
-    
+    try {
+      document.querySelectorAll('#create').forEach(link => {
+        link.addEventListener('click', showCreateBox);
+      });
+    } catch(error) {
+      console.log("Cannot create page/event/group here.");
+      console.log(error);
+    }
+
+    document.querySelector('#create-peg').style.display = 'none';  
+
+
   });
   
 
 function writePost(event) {
     // Save form contents to variable
-    postBody = document.querySelector("#post-body").value;
+    postBody = document.querySelector('#post-body').value;
     
     // POST message to the API to save into database
     fetch('/post', {
@@ -102,6 +112,13 @@ function showEditBox(event) {
   saveButton.dataset.target = `${postId}`;
   event.preventDefault();
   return false;
+}
+
+function showCreateBox(event) {
+  // need to set form's display style to block
+  document.querySelector('#create-peg').style.display = 'block'; 
+  console.log(event);
+  event.preventDefault();
 }
 
 function follow(event) {

@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Friendship, Message, Page, Post, Event, Event_Attendee, Group, Group_Member, Comment, Like
-from .utils import get_posts, get_comments
+from .utils import get_posts, get_comments, getPageEventGroup
 
 
 def index(request):
@@ -19,7 +19,7 @@ def index(request):
 
 
 def newsfeed(request):
-    return render(request, "network/newsfeed.html", {
+    return render(request, "network/index.html", {
         "posts": get_posts(request=request, friend=request.user)
     })
 
@@ -53,6 +53,7 @@ def register(request):
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
+        profile_picture = request.POST["profile_picture"]
 
         # Ensure password matches confirmation
         password = request.POST["password"]
@@ -65,6 +66,8 @@ def register(request):
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
+            print(profile_picture)
+            user.profile_picture = profile_picture
             user.save()
         except IntegrityError:
             return render(request, "network/register.html", {
@@ -74,27 +77,6 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
-
-
-def pages(request, id=None):
-    if id is not None:
-        return render(request, "network/pages.html", {"id": id})
-    else:
-        return render(request, "network/pages.html")
-
-
-def events(request, id=None):
-    if id is not None:
-        return render(request, "network/events.html", {"id": id})
-    else:
-        return render(request, "network/events.html")
-
-
-def groups(request, id=None):
-    if id is not None:
-        return render(request, "network/groups.html", {"id": id})
-    else:
-        return render(request, "network/groups.html")
 
 
 @csrf_exempt # not needed?
@@ -170,6 +152,7 @@ def compose(request):
 
     return JsonResponse({"message": "Message sent successfully."}, status=201)
 
+
 @csrf_exempt # replace with csrf token
 @login_required
 def mailbox(request, mailbox):
@@ -225,7 +208,73 @@ def email(request, email_id):
             "error": "GET or PUT request required."
         }, status=400)
 
+
 @csrf_exempt # add csrf token
+@login_required
 def messages(request):
     return render(request, "network/messages.html")
+
+
+def pages(request, id=None):
+    return getPageEventGroup(request=request, view="page", page_id=id)
+
+def events(request, id=None):
+    return getPageEventGroup(request=request, view="event", event_id=id)
+
+def groups(request, id=None):
+    return getPageEventGroup(request=request, view="group", group_id=id)
+
+
+@csrf_exempt
+@login_required
+def edit(request, post_id):
+    # Editing a croak must be via POST
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    # Get contents of form
+    data = json.loads(request.body)
+    body = data.get("body", "")
+    # post_id = data.get("id", "")
+
+    # Query for post
+    post = Post.objects.get(id=post_id)
+
+    # Check if logged in user is author
+    is_author = request.user == post.author
+
+    if is_author:
+        # Save edit to post
+        post.body = body
+        post.save()
+        return JsonResponse({
+            "message": "Post edited successfully."
+            }, status=201)
+    else:
+        # Block the edit
+        return JsonResponse({
+            "message": "You cannot edit that post."
+            })
+
+
+@login_required
+def like(request, post_id):
+    # Query for requested post
+    try:
+        target = Post.objects.get(id=post_id)
+        print(target)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+
+    # Delete an existing like. If there isn't one, add a like.
+    try:
+        old_like = Like.objects.get(post=target, liker=request.user)
+        old_like.delete()
+        result = "unliked"
+    except Like.DoesNotExist:
+        new_like = Like(post=target, liker=request.user)
+        new_like.save()
+        result = "liked"
+    new_likes = Like.objects.filter(post=target).count()
+    return JsonResponse({"result": result, "newLikes": new_likes}, status=200)
 

@@ -27,7 +27,7 @@
                         <a class="nav-link" href="{% url 'messages' %}">Messages</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">News Feed</a>
+                        <a class="nav-link" href="{% url 'newsfeed' %}">News Feed</a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
@@ -54,10 +54,20 @@
               </ul>
             </div>
           </nav>
-        
+          
+          <div id="create-peg">
+            <form action="{% url 'create' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" id="peg-type" value="<!-- page/event/group -->">
+                asdf
+                <input class="btn btn-primary" type="submit" value="Create <!-- page/event/group -->">
+            </form>
+        </div>
+
         <div class="body">
             {% block body %}
             {% endblock %}
         </div>
+
     </body>
 </html>

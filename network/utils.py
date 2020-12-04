@@ -1,15 +1,34 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render
+from django.urls import reverse
 from .models import User, Friendship, Message, Page, Post, Event, Event_Attendee, Group, Group_Member, Comment, Like
 
 
 def get_posts(request, profile=None, friend=None):
     posts = None
     if profile is not None:
-        posts = Post.objects.filter(author=profile) # get all posts written by the user whose profile we are viewing
+        # If we're looking at someone's profile, get their posts.
+        posts = Post.objects.filter(author=profile)
     elif friend is not None:
-        posts = Post.objects.filter(author__friend1__friend2=friend) # get all posts written by the viewer's friends. need to also get author__friend2__friend1=friend
+        # If we're looking at our newsfeed, get posts by our friends.
+        print("looking for friendships of: " + str(friend.username))
+        friendships1 = Friendship.objects.filter(friend2=friend)
+        friendships2 = Friendship.objects.filter(friend1=friend)
+        print(friendships1 | friendships2)
+        print("looking for friends of: " + str(friend.username))
+        friends = [] # Initialize empty list of friends
+        for friendship in friendships1:
+            friends.append(friendship.friend1) # Add people who friended you to list
+        for friendship in friendships2:
+            friends.append(friendship.friend2) # Add people you friended to list
+        print(friends)
+        posts = Post.objects.none() # Initialize empty set of posts
+        for author in friends:
+            posts = posts | Post.objects.filter(author=author)
+        print(posts)
     else:
-        posts = Post.objects.all() # if we're not looking at newsfeed or a profile, show all posts
+        # If we're not looking at our newsfeed or someone's profile, show all posts.
+        posts = Post.objects.all()
     posts = posts.order_by("-timestamp").all()
     for post in posts:
         post.numlikes = Like.objects.filter(post=post).count() # count how many likes the post has
@@ -35,4 +54,34 @@ def get_comments(post=None, page=None, event=None, group=None):
         comments = Comment.objects.filter(group=group) # get comments on the specified group
     return comments
 
+
+def getPageEventGroup(request, view, page_id=None, event_id=None, group_id=None):
+    id = page_id or event_id or group_id
+    contents = None
+    listing = None
+
+    if page_id is not None:
+        listing = Page.objects.get(id=id)
+    elif event_id is not None:
+        listing = Event.objects.get(id=id)
+    elif group_id is not None:
+        listing = Group.objects.get(id=id)
+    elif view == "page":
+        contents = Page.objects.all()
+    elif view == "event":
+        contents = Event.objects.all()
+    elif view == "group":
+        contents = Group.objects.all()
+    
+    return render(request, "network/page-event-group.html", {
+        "view": view,
+        "id": id,
+        "listing": listing,
+        "contents": contents
+    })
+    
+
+
+def create(request, type):
+    pass # need to implement page/event/group creation here
 

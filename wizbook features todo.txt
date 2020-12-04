@@ -1,8 +1,13 @@
-Implement comment replies to posts.
-Implement likes by clicking heart icon.
-Implement edits by clicking pencil icon.
+Implement comment form to reply to posts.
+
+Check wiki project: display safe text/html
 
 Implement a form where you can create a page, event, or group.
+page template needs to show comments
+
+form for comment replies
+js for add comment replies
+
 
 
 Wizbook
@@ -13,27 +18,40 @@ Friends
 Events
 Groups
 Messages
-Calendar, birthdays
+Calendar, birthdays?
 
 
 
 
 
 List of pages implemented:
-
+network/ # displays timeline, and links to your groups, events, messages
+network/newsfeed # displays posts from people you are friends with
+network/profile/<str:username> displays profile of user username
+network/messages/ # show an inbox like the email project
 
 List of pages needed:
-network/ # displays timeline, notifications, links to your groups, contacts, events, messages
-network/newsfeed # displays posts from people you are following, comments on groups/events/pages you're following
-network/profile/<str:username> # displays info about user username, including pages they like
+
 network/profile/<str:username>/friends # displays all of their friends. maybe just show friends on their profile?
+
 network/events/<int:id> # display event description and comments
 network/groups/<int:id> # display group info and comments
 network/pages/ # display list of all pages
 network/pages/<int:id> # display page info and comments
-network/messages/ # show an inbox like the email project
+
+
+
+Optional stuff:
+implement friend requests in between friending and friendship
+add notifications
+show comments on groups/events/pages you follow on your newsfeed
+show someone's pages/events/groups on their profile
 network/calendar/ # show calendar of upcoming events and the next birthday of each of your friends
-
-
+Remove CSRF exemptions and implement tokens.
+Implement markdown on posts/comments/pages.
 
 Content to add:
+
+Group: Harry Potter Fan Club
+Colin Creevey https://harrypotter.fandom.com/wiki/Colin_Creevey
+Ginny Weasley https://harrypotter.fandom.com/wiki/Ginevra_Weasley

@@ -1,0 +1,38 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block script %}
+    <script src="{% static 'network/wizbook.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    {% if listing %}
+        <h4>{{ view }} created by {{ listing.owner }}: {{ listing.name }}</h4>
+        {% if listing.place %}Location: {{ listing.place }}<br />{% endif %}
+        {% if listing.date %}Date: {{ listing.date }}<br />{% endif %}
+        {{ listing.description|safe }}<br /><br />
+        <img src="{{ listing.picture }}" alt="{{ listing.name }}" height="400px" />
+    {% else %}
+        <h3>{{ view }}s</h3>
+        <a href="" id="create">Create new {{ view }}</a><br />
+        Your {{ view }}s:<br />
+        {% for listing in contents %}
+            {% if listing.owner == request.user %}
+                <p>
+                    {{ view }} created by {{ listing.owner }}: <a href="{{ view }}s/{{ listing.id }}">{{ listing.name }}</a><br />
+                    {{ listing.description }}<br />
+                </p>
+            {% endif %}
+        {% endfor %}
+        Other {{ view }}s:<br />
+        Need to filter these to events the current user is not attending / groups the user is not a member of / pages the user does not like.<br />
+        <br />
+        {% for listing in contents %}
+            {% if listing.owner != request.user %}
+                <p>
+                    {{ view }} created by {{ listing.owner }}: <a href="{{ view }}s/{{ listing.id }}">{{ listing.name }}</a><br />
+                    {{ listing.description }}<br />
+                </p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}

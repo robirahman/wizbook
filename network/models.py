@@ -7,7 +7,7 @@ class User(AbstractUser):
     # birthday = models.DateField(blank=True, auto_now_add=False) # Need to ask this upon registration.
     
     def __str__(self):
-        return "User: " + str(self.username)
+        return str(self.username)
 
 
 class Friendship(models.Model):
@@ -52,7 +52,7 @@ class Page(models.Model):
     description = models.TextField(blank=True)
 
     def __str__(self):
-        return "Page: " + str(self.name)
+        return str(self.name)
 
 
 class Post(models.Model):
@@ -72,7 +72,7 @@ class Event(models.Model):
     picture = models.TextField(blank=True)
 
     def __str__(self):
-        return "Event: " + str(self.name)
+        return str(self.name)
 
 
 class Event_Attendee(models.Model):
@@ -90,7 +90,7 @@ class Group(models.Model):
     picture = models.TextField(blank=True)
 
     def __str__(self):
-        return "Group: " + str(self.name)
+        return str(self.name)
 
 
 class Group_Member(models.Model):
