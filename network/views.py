@@ -53,6 +53,9 @@ def register(request):
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
+        first_name = request.POST["first_name"]
+        last_name = request.POST["last_name"]
+        birthday = request.POST["birthday"]
         profile_picture = request.POST["profile_picture"]
 
         # Ensure password matches confirmation
@@ -67,6 +70,9 @@ def register(request):
         try:
             user = User.objects.create_user(username, email, password)
             print(profile_picture)
+            user.first_name = first_name
+            user.last_name = last_name
+            user.birthday = birthday
             user.profile_picture = profile_picture
             user.save()
         except IntegrityError:
@@ -80,7 +86,6 @@ def register(request):
 
 
 @csrf_exempt # not needed?
-@login_required
 def profile(request, username):
     user = User.objects.filter(username=username)
     profile_data = user.values()[0]
@@ -90,12 +95,17 @@ def profile(request, username):
         profile_pic = profile_data['profile_picture']
     except KeyError:
         profile_pic = None
+    try:
+        birthday = profile_data['birthday']
+    except:
+        birthday = None
     email = profile_data['email']
     posts = get_posts(request, profile=user[0])
     return render(request, "network/profile.html", {
         "username": username,
         "firstname": firstname,
         "lastname": lastname,
+        "birthday": birthday,
         "profile_pic": profile_pic,
         "email": email,
         "posts": posts

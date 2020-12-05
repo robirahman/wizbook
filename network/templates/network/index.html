@@ -20,18 +20,18 @@
             {% for post in posts %}
                 <div class="post">
                     <img class="smallpic" src="{{ post.author.profile_picture }}" />
-                    At {{ post.timestamp }}, <a href="http://127.0.0.1:8000/users/{{ post.author.username }}">{{ post.author.username }}</a> ({{ post.author.first_name }} {{ post.author.last_name }}) wrote:<br />
+                    At {{ post.timestamp }}, <a href="{% url 'view_profile' post.author.username %}">{{ post.author.username }}</a> ({{ post.author.first_name }} {{ post.author.last_name }}) wrote:<br />
                     <span id="post{{ post.id}}">{{ post.body }}</span><br />
                     {% if user == post.author %}
-                    <a href="" class="edit" id="edit{{ post.id }}">✏️</a>
+                        <a href="" class="edit" id="edit{{ post.id }}">✏️</a>
                     {% else %}
-                    <a href="" class="like" id="like{{ post.id }}">❤</a>
+                        <a href="" class="like" id="like{{ post.id }}">❤</a>
                     {% endif %}
                     <a class="likes" id="likes{{ post.id }}">{{ post.numlikes }}</a> users like this. | 
                     <a href="" class="comment" id="comment{{ post.id }}">💬</a>
-                    <a class="comments" id="comments{{ post.id }}">{{ post.numcomments }}</a>
+                    <a class="comments" id="comments{{ post.id }}">{{ post.numcomments }}</a><br />
                     {% for comment in post.comments %}
-                        <br />{{ comment.author.first_name }} {{ comment.author.last_name }} replied: {{ comment.body }}
+                        <br /><img class="tinypic" src="{{ comment.author.profile_picture}}" />{{ comment.author.first_name }} {{ comment.author.last_name }} replied: {{ comment.body }}
                     {% endfor %}
                 </div>
             {% endfor %}

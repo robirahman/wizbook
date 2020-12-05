@@ -3,8 +3,8 @@ from django.db import models
 
 
 class User(AbstractUser):
-    profile_picture = models.TextField(blank=True) # Need to add a field to registration form that takes this as input.
-    # birthday = models.DateField(blank=True, auto_now_add=False) # Need to ask this upon registration.
+    profile_picture = models.TextField(blank=True)
+    birthday = models.DateField(blank=True, auto_now_add=True)
     
     def __str__(self):
         return str(self.username)

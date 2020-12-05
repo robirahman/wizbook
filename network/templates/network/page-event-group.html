@@ -5,34 +5,75 @@
 {% endblock %}
 
 {% block body %}
-    {% if listing %}
-        <h4>{{ view }} created by {{ listing.owner }}: {{ listing.name }}</h4>
-        {% if listing.place %}Location: {{ listing.place }}<br />{% endif %}
-        {% if listing.date %}Date: {{ listing.date }}<br />{% endif %}
-        {{ listing.description|safe }}<br /><br />
-        <img src="{{ listing.picture }}" alt="{{ listing.name }}" height="400px" />
-    {% else %}
-        <h3>{{ view }}s</h3>
-        <a href="" id="create">Create new {{ view }}</a><br />
-        Your {{ view }}s:<br />
-        {% for listing in contents %}
-            {% if listing.owner == request.user %}
-                <p>
-                    {{ view }} created by {{ listing.owner }}: <a href="{{ view }}s/{{ listing.id }}">{{ listing.name }}</a><br />
-                    {{ listing.description }}<br />
-                </p>
+
+    <div id="create-peg">
+        <form action="{% url 'create' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" id="peg-type" name="peg-type" value="{{ view }}">
+            Name:<br />
+            <input type="text" name="name" placeholder="{{ view }} name"><br />
+            Picture:<br />
+            <input type="text" name="picture" placeholder="URL for {{ view }} photo"><br />
+            Description:<br />
+            <textarea name="description" placeholder="description"></textarea><br />
+            {% if view == "event" %}
+                Date<br />
+                <input type="date" name="date"><br />
+                Location<br />
+                <input type="text" name="location" placeholder="Location"><br />
             {% endif %}
-        {% endfor %}
-        Other {{ view }}s:<br />
-        Need to filter these to events the current user is not attending / groups the user is not a member of / pages the user does not like.<br />
-        <br />
-        {% for listing in contents %}
-            {% if listing.owner != request.user %}
-                <p>
-                    {{ view }} created by {{ listing.owner }}: <a href="{{ view }}s/{{ listing.id }}">{{ listing.name }}</a><br />
-                    {{ listing.description }}<br />
-                </p>
+            <input type="submit" value="Create {{ view }}">
+            <br /><a href="">Back to {{ view }}s</a>
+        </form>
+    </div>
+    <div id="listings">
+        {% if listing %}
+            <h4>{{ listing.name }}</h4>
+            {% if listing.place %}Location: {{ listing.place }}<br />{% endif %}
+            {% if listing.date %}Date: {{ listing.date }}<br />{% endif %}
+            {{ listing.description|safe }}<br /><br />
+            <img src="{{ listing.picture }}" alt="{{ listing.name }}" height="400px" /><br />
+            {% for comment in listing.comments %}
+                <br /><img class="tinypic" src="{{ comment.author.profile_picture}}" />{{ comment.author }} ({{ comment.author.first_name }} {{ comment.author.last_name }}) wrote: {{ comment.body }}
+            {% endfor %}
+            <br />
+            {% if attendees %}
+                <br />Event attendees:
+                {% for person in listing.people %}
+                <br />{{ person.first_name }} {{ person.last_name }}
+                {% endfor %}
             {% endif %}
-        {% endfor %}
-    {% endif %}
+            {% if members %}
+                <br />Group members:<br />
+                {% for person in listing.people %}
+                <br />{{ person.first_name }} {{ person.last_name }}
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            <h3>{% if view == "page" %}Pages{% elif view == "event" %}Events{% elif view == "groups" %}Groups{% endif %}</h3>
+            <a href="" id="create">Create new {{ view }}</a><br />
+            Your {{ view }}s:<br />
+            {% for listing in contents %}
+                {% if listing.owner == request.user %}
+                    <p>
+                        <h6><a href="{{ view }}s/{{ listing.id }}">{{ listing.name }}</a></h6>
+                        {{ listing.description }}<br />
+                    </p>
+                {% endif %}
+            {% endfor %}
+            Other {{ view }}s:<br />
+            Need to filter these to events the current user is not attending / groups the user is not a member of / pages the user does not like.<br />
+            <br />
+            {% for listing in contents %}
+                {% if listing.owner != request.user %}
+                <hr />
+                    <p>
+                        <h6><a href="{{ view }}s/{{ listing.id }}">{{ listing.name }}</a></h6>
+                        {{ listing.description|safe }}
+                    </p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+
 {% endblock %}

@@ -14,18 +14,14 @@ def get_posts(request, profile=None, friend=None):
         print("looking for friendships of: " + str(friend.username))
         friendships1 = Friendship.objects.filter(friend2=friend)
         friendships2 = Friendship.objects.filter(friend1=friend)
-        print(friendships1 | friendships2)
-        print("looking for friends of: " + str(friend.username))
         friends = [] # Initialize empty list of friends
         for friendship in friendships1:
             friends.append(friendship.friend1) # Add people who friended you to list
         for friendship in friendships2:
             friends.append(friendship.friend2) # Add people you friended to list
-        print(friends)
         posts = Post.objects.none() # Initialize empty set of posts
         for author in friends:
             posts = posts | Post.objects.filter(author=author)
-        print(posts)
     else:
         # If we're not looking at our newsfeed or someone's profile, show all posts.
         posts = Post.objects.all()
@@ -59,13 +55,24 @@ def getPageEventGroup(request, view, page_id=None, event_id=None, group_id=None)
     id = page_id or event_id or group_id
     contents = None
     listing = None
+    attendees = False
+    members = False
 
     if page_id is not None:
         listing = Page.objects.get(id=id)
+        listing.comments = get_comments(page=listing)
     elif event_id is not None:
         listing = Event.objects.get(id=id)
+        listing.comments = get_comments(event=listing)
+        listing.people = User.objects.filter(events_attended__event=listing)
+        if len(listing.people) != 0:
+            attendees = True
     elif group_id is not None:
         listing = Group.objects.get(id=id)
+        listing.comments = get_comments(group=listing)
+        listing.people = User.objects.filter(groups_joined__group=listing)
+        if len(listing.people) != 0:
+            members = True
     elif view == "page":
         contents = Page.objects.all()
     elif view == "event":
@@ -77,11 +84,16 @@ def getPageEventGroup(request, view, page_id=None, event_id=None, group_id=None)
         "view": view,
         "id": id,
         "listing": listing,
-        "contents": contents
+        "contents": contents,
+        "attendees": attendees,
+        "members": members
     })
     
 
 
 def create(request, type):
-    pass # need to implement page/event/group creation here
+    if request.method == "POST":
+        username = request.POST["username"]
+    else:
+        pass
 

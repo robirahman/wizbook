@@ -21,7 +21,7 @@
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="http://127.0.0.1:8000/users/{{ user.username }}"><strong>{{ user.username }}</strong></a>
+                        <a class="nav-link" href="{% url 'view_profile' user.username %}"><strong>{{ user.username }}</strong></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'messages' %}">Messages</a>
@@ -54,15 +54,6 @@
               </ul>
             </div>
           </nav>
-          
-          <div id="create-peg">
-            <form action="{% url 'create' %}" method="POST">
-                {% csrf_token %}
-                <input type="hidden" id="peg-type" value="<!-- page/event/group -->">
-                asdf
-                <input class="btn btn-primary" type="submit" value="Create <!-- page/event/group -->">
-            </form>
-        </div>
 
         <div class="body">
             {% block body %}

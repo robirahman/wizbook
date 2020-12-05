@@ -1,9 +1,6 @@
 Implement comment form to reply to posts.
 
-Check wiki project: display safe text/html
-
 Implement a form where you can create a page, event, or group.
-page template needs to show comments
 
 form for comment replies
 js for add comment replies
@@ -34,7 +31,9 @@ List of pages needed:
 
 network/profile/<str:username>/friends # displays all of their friends. maybe just show friends on their profile?
 
+network/events/ # display list of all events
 network/events/<int:id> # display event description and comments
+network/groups/ # display list of all groups
 network/groups/<int:id> # display group info and comments
 network/pages/ # display list of all pages
 network/pages/<int:id> # display page info and comments
@@ -50,8 +49,13 @@ network/calendar/ # show calendar of upcoming events and the next birthday of ea
 Remove CSRF exemptions and implement tokens.
 Implement markdown on posts/comments/pages.
 
+Convert profile_picture in User model to URLField
+Add Django form validation on user signup to ensure birthday is a date
+
+
 Content to add:
 
 Group: Harry Potter Fan Club
 Colin Creevey https://harrypotter.fandom.com/wiki/Colin_Creevey
-Ginny Weasley https://harrypotter.fandom.com/wiki/Ginevra_Weasley
+Ginny Weasley
+Neville Longbottom

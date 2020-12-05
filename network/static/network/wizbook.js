@@ -117,6 +117,7 @@ function showEditBox(event) {
 function showCreateBox(event) {
   // need to set form's display style to block
   document.querySelector('#create-peg').style.display = 'block'; 
+  document.querySelector('#listings').style.display = 'none';
   console.log(event);
   event.preventDefault();
 }

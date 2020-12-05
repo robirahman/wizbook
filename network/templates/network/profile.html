@@ -8,25 +8,28 @@
     {% csrf_token %}
     <div id="user-info">
         <h3>{{ username }}'s profile</h3>
-        {% if firstname and lastname %}{{ firstname }} {{ lastname }}<br />{% endif %}
         {% if profile_pic %}<img src="{{ profile_pic }}" alt="{{ username }}" height="400px" /><br />{% endif %}
+        {% if firstname and lastname %}{{ firstname }} {{ lastname }}<br />{% endif %}
         {% if email %}Email address: {{ email }}<br />{% endif %}
+        {% if birthday %}Birthday: {{ birthday }}<br />{% endif %}
     </div>
     {% if posts %}
         <div id="posts">
             {% for post in posts %}
                 <div class="post">
-                    At {{ post.timestamp }}, <a href="http://127.0.0.1:8000/users/{{ post.author.username }}">{{ post.author.username }}</a> ({{ post.author.first_name }} {{ post.author.last_name }}) wrote:<br />
+                    <img class="smallpic" src="{{ post.author.profile_picture }}" />
+                    At {{ post.timestamp }}, <a href="{% url 'view_profile' post.author.username %}">{{ post.author.username }}</a> ({{ post.author.first_name }} {{ post.author.last_name }}) wrote:<br />
                     <span id="post{{ post.id}}">{{ post.body }}</span><br />
-                    <a class="likes" id="likes{{ post.id }}">{{ post.likes }}</a> users like this.
                     {% if user == post.author %}
-                    <a href="" class="edit" id="edit{{ post.id }}">✏️</a>
+                        <a href="" class="edit" id="edit{{ post.id }}">✏️</a>
                     {% else %}
-                    <a href="" class="like" id="like{{ post.id }}">❤</a>
+                        <a href="" class="like" id="like{{ post.id }}">❤</a>
                     {% endif %}
+                    <a class="likes" id="likes{{ post.id }}">{{ post.numlikes }}</a> users like this. | 
                     <a href="" class="comment" id="comment{{ post.id }}">💬</a>
+                    <a class="comments" id="comments{{ post.id }}">{{ post.numcomments }}</a><br />
                     {% for comment in post.comments %}
-                        <p>{{ comment.author.first_name }} {{ comment.author.last_name }} replied: {{ comment.body }}</p>
+                        <br /><img class="tinypic" src="{{ comment.author.profile_picture}}" />{{ comment.author.first_name }} {{ comment.author.last_name }} replied: {{ comment.body }}
                     {% endfor %}
                 </div>
             {% endfor %}
