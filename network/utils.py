@@ -1,5 +1,6 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from .models import User, Friendship, Message, Page, Post, Event, Event_Attendee, Group, Group_Member, Comment, Like
 
@@ -55,12 +56,16 @@ def getPageEventGroup(request, view, page_id=None, event_id=None, group_id=None)
     id = page_id or event_id or group_id
     contents = None
     listing = None
+    fans = False
     attendees = False
     members = False
 
     if page_id is not None:
         listing = Page.objects.get(id=id)
         listing.comments = get_comments(page=listing)
+        listing.people = User.objects.filter(likes_given__page=listing)
+        if len(listing.people) != 0:
+            fans = True
     elif event_id is not None:
         listing = Event.objects.get(id=id)
         listing.comments = get_comments(event=listing)
@@ -85,15 +90,37 @@ def getPageEventGroup(request, view, page_id=None, event_id=None, group_id=None)
         "id": id,
         "listing": listing,
         "contents": contents,
+        "fans": fans,
         "attendees": attendees,
         "members": members
     })
     
 
 
-def create(request, type):
+def create(request):
     if request.method == "POST":
-        username = request.POST["username"]
+        peg_type = request.POST["peg-type"]
+        owner = request.user
+        name = request.POST["name"]
+        picture = request.POST["picture"]
+        description = request.POST["description"]
+        if peg_type == "page":
+            page = Page.objects.create(owner=owner, name=name, picture=picture, description=description)
+            page.save()
+            id = Page.objects.filter(name=name)[0].id
+            return getPageEventGroup(request, view="page", page_id=id)
+        elif peg_type == "event":
+            date = request.POST["date"]
+            place = request.POST["location"]
+            event = Event.objects.create(owner=owner, name=name, picture=picture, description=description, date=date, place=place)
+            event.save()
+            id = Event.objects.filter(name=name)[0].id
+            return getPageEventGroup(request, view="event", event_id=id)
+        elif peg_type == "group":
+            group = Group.objects.create(owner=owner, name=name, picture=picture, description=description)
+            group.save()
+            id = Group.objects.filter(name=name)[0].id
+            return getPageEventGroup(request, view="group", group_id=id)
     else:
-        pass
+        return HttpResponseRedirect(reverse("index"))
 

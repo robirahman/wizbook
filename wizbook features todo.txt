@@ -1,6 +1,6 @@
 Implement comment form to reply to posts.
 
-Implement a form where you can create a page, event, or group.
+Implement a button where you can like a page, attend an event, or join a group.
 
 form for comment replies
 js for add comment replies
@@ -17,10 +17,6 @@ Groups
 Messages
 Calendar, birthdays?
 
-
-
-
-
 List of pages implemented:
 network/ # displays timeline, and links to your groups, events, messages
 network/newsfeed # displays posts from people you are friends with
@@ -32,11 +28,11 @@ List of pages needed:
 network/profile/<str:username>/friends # displays all of their friends. maybe just show friends on their profile?
 
 network/events/ # display list of all events
-network/events/<int:id> # display event description and comments
+network/events/<int:id> # display event description, attendees, and comments
 network/groups/ # display list of all groups
-network/groups/<int:id> # display group info and comments
+network/groups/<int:id> # display group description, members, and comments
 network/pages/ # display list of all pages
-network/pages/<int:id> # display page info and comments
+network/pages/<int:id> # display page description, fans, and comments
 
 
 
@@ -49,13 +45,12 @@ network/calendar/ # show calendar of upcoming events and the next birthday of ea
 Remove CSRF exemptions and implement tokens.
 Implement markdown on posts/comments/pages.
 
-Convert profile_picture in User model to URLField
-Add Django form validation on user signup to ensure birthday is a date
+Convert picture TextField in User, Page, Event, Group models to URLField
 
 
 Content to add:
 
 Group: Harry Potter Fan Club
-Colin Creevey https://harrypotter.fandom.com/wiki/Colin_Creevey
+Colin Creevey
 Ginny Weasley
 Neville Longbottom
