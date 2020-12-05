@@ -34,9 +34,11 @@ urlpatterns = [
     # Pages, events, groups: create new
     path("create", utils.create, name="create"),
 
+    # Write a post
+    path("post", views.write, name="write_post"),
     # Like a post
-    # path("post/<int:post_id>", views.post, name="post"),
     path("post/<int:post_id>/like", views.like, name="like_post"),
+    # Edit a post
     path("post/<int:post_id>/edit", views.edit, name="edit_post"),
 
 ]

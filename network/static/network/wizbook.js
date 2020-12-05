@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
       document.querySelector('#post').addEventListener('click', writePost);
       document.querySelector('#new-post').addEventListener('click', showPostBox);
+      document.querySelector('#cancel').addEventListener('click', hidePostBox);
     } catch(error) {
       console.log("No post form on this page.");
       // console.log(error);
@@ -36,10 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log("Cannot create page/event/group here.");
       console.log(error);
     }
-
-    document.querySelector('#create-peg').style.display = 'none';  
-
-
+    try {
+      document.querySelector('#create-peg').style.display = 'none';
+    } catch(error) {
+      console.log('No page/event/group form on this page.');
+    }
+  
   });
   
 
@@ -96,6 +99,11 @@ function saveEdit(event) {
 function showPostBox(event) {
     document.querySelector('#post-box').style.display = 'block';
     event.preventDefault();
+}
+
+function hidePostBox(event) {
+  document.querySelector('#post-box').style.display = 'none';
+  event.preventDefault();
 }
 
 function showEditBox(event) {

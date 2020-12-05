@@ -237,6 +237,27 @@ def groups(request, id=None):
 
 @csrf_exempt
 @login_required
+def write(request):
+
+    # Composing a new croak must be via POST
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    # Get contents of post
+    data = json.loads(request.body)
+    body = data.get("body", "")
+
+    # Create post
+    post = Post(
+        author=request.user,
+        body=body
+    )
+    post.save()
+
+    return JsonResponse({"message": "Post saved successfully."}, status=201)
+
+@csrf_exempt
+@login_required
 def edit(request, post_id):
     # Editing a croak must be via POST
     if request.method != "POST":

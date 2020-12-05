@@ -6,13 +6,14 @@
 
 {% block body %}
     <h4>The Latest Magical Happenings</h4>
-    <div id="post-box"><!-- formerly croak-box -->
-        <form id="post-form"><!-- formerly croak-form -->
+    <a href="" id="new-post">Write new post</a>
+    <div id="post-box">
+        <form id="post-form">
             {% csrf_token %}
             <br />
             <textarea id="post-body">Write your post here.</textarea>
             <br />
-            <input type="submit" id="post" /><!-- formerly croak -->
+            <input type="submit" id="post" /><input type="submit" id="cancel" value="Cancel" />
         </form>
     </div>
     {% if posts %}

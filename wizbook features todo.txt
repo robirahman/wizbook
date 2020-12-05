@@ -5,6 +5,8 @@ Implement a button where you can like a page, attend an event, or join a group.
 form for comment replies
 js for add comment replies
 
+need to be able to add someone as friend on their profile page
+
 
 
 Wizbook

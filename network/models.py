@@ -120,5 +120,11 @@ class Like(models.Model):
     comment = models.ForeignKey("Comment", on_delete=models.CASCADE, related_name="comment_likes", blank=True, null=True)
 
     def __str__(self):
-        return str(self.liker) + " liked something." # need to get name or contents of liked object
+        if self.page is not None:
+            thing = str(" a page.")
+        elif self.post is not None:
+            thing = str(" a post.")
+        elif self.comment is not none:
+            thing = str(" a comment.")
+        return str(self.liker) + thing
 
