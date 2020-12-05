@@ -110,7 +110,16 @@ class Comment(models.Model):
     group = models.ForeignKey("Group", on_delete=models.CASCADE, related_name="group_comments", blank=True, null=True)
 
     def __str__(self):
-        return str(self.author) + " wrote a comment." # need to get text of comment
+        if self.page is not None:
+            thing = str(" page.")
+        elif self.post is not None:
+            thing = str(" post.")
+        elif self.event is not None:
+            thing = str("n event.")
+        elif self.group is not None:
+            thing = str(" group.")
+        
+        return str(self.author) + " commented on a" + thing
 
 
 class Like(models.Model):
@@ -121,10 +130,10 @@ class Like(models.Model):
 
     def __str__(self):
         if self.page is not None:
-            thing = str(" a page.")
+            thing = str("page.")
         elif self.post is not None:
-            thing = str(" a post.")
+            thing = str("post.")
         elif self.comment is not none:
-            thing = str(" a comment.")
-        return str(self.liker) + thing
+            thing = str("comment.")
+        return str(self.liker) + " liked a " + thing
 

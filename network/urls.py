@@ -14,6 +14,15 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("newsfeed", views.newsfeed, name="newsfeed"),
 
+    # Write a post
+    path("post", views.write, name="write_post"),
+    # Like a post
+    path("post/<int:post_id>/like", views.like, name="like_post"),
+    # Edit a post
+    path("post/<int:post_id>/edit", views.edit, name="edit_post"),
+    # Comment on a post
+    path("post/<int:post_id>/comment", views.comment, name="commenton_post"),
+
     # User profiles
     path("users/<str:username>", views.profile, name="view_profile"),
 
@@ -33,12 +42,5 @@ urlpatterns = [
     path("events/<int:id>", views.events, name="view_event"),
     # Pages, events, groups: create new
     path("create", utils.create, name="create"),
-
-    # Write a post
-    path("post", views.write, name="write_post"),
-    # Like a post
-    path("post/<int:post_id>/like", views.like, name="like_post"),
-    # Edit a post
-    path("post/<int:post_id>/edit", views.edit, name="edit_post"),
 
 ]

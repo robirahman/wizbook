@@ -6,7 +6,11 @@ document.addEventListener('DOMContentLoaded', function() {
       document.querySelector('#cancel').addEventListener('click', hidePostBox);
     } catch(error) {
       console.log("No post form on this page.");
-      // console.log(error);
+    }
+    try {
+      document.querySelector('#comment-box').style.display = 'none';
+    } catch(error) {
+      console.log("No comment form on this page.");
     }
     try {
       document.querySelector('#follow').addEventListener('click', follow);
@@ -19,8 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         heart.addEventListener('click', like)
       });
     } catch(error) {
-      console.log("No posts on this page.");
-      // console.log(error);
+      console.log("No likeable posts on this page.");
     }
     try {
       document.querySelectorAll('.edit').forEach(pencil => {
@@ -28,6 +31,13 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     } catch(error) {
       console.log("No editable posts on this page.");
+    }
+    try {
+      document.querySelectorAll('.comment').forEach(bubble => {
+        bubble.addEventListener('click', showCommentBox);
+      });
+    } catch(error) {
+      console.log("Nowhere to comment on this page.");
     }
     try {
       document.querySelectorAll('#create').forEach(link => {
@@ -59,7 +69,7 @@ function writePost(event) {
     })
     .then(response => {
       if (response.status === 400) {
-        alert("Tweet not posted.");
+        alert("Message was not posted.");
       } else {
         response.json();
         window.location.href = "";
@@ -67,6 +77,48 @@ function writePost(event) {
     });
     event.preventDefault();
   }
+
+
+function showPostBox(event) {
+  document.querySelector('#post-box').style.display = 'block';
+  event.preventDefault();
+}
+
+function hidePostBox(event) {
+  document.querySelector('#post-box').style.display = 'none';
+  event.preventDefault();
+}
+
+function showEditBox(event) {
+  postId = event.target.id.slice(4);
+  let postBody = document.querySelector(`#post${postId}`);
+  document.querySelector('#edit-body').innerHTML = postBody.innerHTML;
+  let editAnchor = document.querySelector(`#edit${postId}`);
+  let editBox = document.querySelector('#edit-box');
+  const parentPost = editAnchor.parentElement;
+  parentPost.append(editBox);
+  editBox.style.display = 'block';
+  saveButton = document.querySelector('#save-edit');
+  saveButton.addEventListener('click', saveEdit);
+  saveButton.dataset.target = `${postId}`;
+  event.preventDefault();
+  return false;
+}
+
+function showCommentBox(event) {
+  postId = event.target.id.slice(7);
+  let commentBody = document.querySelector(`#comment${postId}`);
+  let commentAnchor = document.querySelector(`#post${postId}`);
+  let commentBox = document.querySelector('#comment-box');
+  const parentPost = commentAnchor.parentElement;
+  parentPost.append(commentBox);
+  commentBox.style.display = 'block';
+  commentButton = document.querySelector('#save-comment');
+  commentButton.addEventListener('click', saveComment);
+  commentButton.dataset.target = `${postId}`;
+  event.preventDefault();
+  return false;
+}
 
 function saveEdit(event) {
   editBox = document.querySelector('#edit-box');
@@ -95,29 +147,31 @@ function saveEdit(event) {
   event.preventDefault();
   return false;
 }
+function saveComment(event) {
+  commentBox = document.querySelector('#comment-box');
+  commentBody = document.querySelector('#comment-body');
+  // Save form contents to variable
+  commentText = commentBody.value;
+  postId = document.querySelector('#save-comment').dataset.target;
 
-function showPostBox(event) {
-    document.querySelector('#post-box').style.display = 'block';
-    event.preventDefault();
-}
-
-function hidePostBox(event) {
-  document.querySelector('#post-box').style.display = 'none';
-  event.preventDefault();
-}
-
-function showEditBox(event) {
-  postId = event.target.id.slice(4);
-  let postBody = document.querySelector(`#post${postId}`);
-  document.querySelector('#edit-body').innerHTML = postBody.innerHTML;
-  let editAnchor = document.querySelector(`#edit${postId}`);
-  let editBox = document.querySelector('#edit-box');
-  const parentPost = editAnchor.parentElement;
-  parentPost.append(editBox);
-  editBox.style.display = 'block';
-  saveButton = document.querySelector('#save-edit');
-  saveButton.addEventListener('click', saveEdit);
-  saveButton.dataset.target = `${postId}`;
+  // POST to the API to save the comment
+  fetch(`/post/${postId}/comment`, {
+    method: 'POST',
+    body: JSON.stringify({
+      text: commentText,
+      id: postId
+    })
+  })
+  .then(response => {
+    if (response.status === 400) {
+      alert("Comment not saved.");
+    } else {
+      response.json();
+      console.log("Need to append the comment to the post here.");
+      commentBox.style.display = 'none';
+    }
+  });
+  alert("Need to reload page or have JS update comments that are shown.");
   event.preventDefault();
   return false;
 }

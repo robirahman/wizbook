@@ -59,6 +59,14 @@
             {% block body %}
             {% endblock %}
         </div>
+        
+        <div id="comment-box">
+            <form id="comment-form">
+                {% csrf_token %}
+                <textarea id="comment-body">Write your comment here.</textarea>
+                <button id="save-comment">Save</button>
+            </form>
+        </div>
 
     </body>
 </html>

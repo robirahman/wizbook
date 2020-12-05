@@ -259,7 +259,7 @@ def write(request):
 @csrf_exempt
 @login_required
 def edit(request, post_id):
-    # Editing a croak must be via POST
+    # Editing a tweet must be via POST
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
 
@@ -287,6 +287,25 @@ def edit(request, post_id):
             "message": "You cannot edit that post."
             })
 
+@csrf_exempt
+@login_required
+def comment(request, post_id=None, page_id=None, event_id=None, group_id=None):
+    # Writing a comment must be via POST
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+    
+    # Get contents of form
+    data = json.loads(request.body)
+    text = data.get("text", "")
+    print(post_id)
+    post = Post.objects.filter(id=post_id)[0]
+    print(post)
+
+    # Create comment
+    comment = Comment.objects.create(body=text, author=request.user, post=post)
+    comment.save()
+
+    return JsonResponse({"message": "Comment posted successfully."})
 
 @login_required
 def like(request, post_id):
