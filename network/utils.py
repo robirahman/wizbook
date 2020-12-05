@@ -63,18 +63,21 @@ def getPageEventGroup(request, view, page_id=None, event_id=None, group_id=None)
     if page_id is not None:
         listing = Page.objects.get(id=id)
         listing.comments = get_comments(page=listing)
+        listing.numcomments = listing.comments.count()
         listing.people = User.objects.filter(likes_given__page=listing)
         if len(listing.people) != 0:
             fans = True
     elif event_id is not None:
         listing = Event.objects.get(id=id)
         listing.comments = get_comments(event=listing)
+        listing.numcomments = listing.comments.count()
         listing.people = User.objects.filter(events_attended__event=listing)
         if len(listing.people) != 0:
             attendees = True
     elif group_id is not None:
         listing = Group.objects.get(id=id)
         listing.comments = get_comments(group=listing)
+        listing.numcomments = listing.comments.count()
         listing.people = User.objects.filter(groups_joined__group=listing)
         if len(listing.people) != 0:
             members = True

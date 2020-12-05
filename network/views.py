@@ -297,12 +297,22 @@ def comment(request, post_id=None, page_id=None, event_id=None, group_id=None):
     # Get contents of form
     data = json.loads(request.body)
     text = data.get("text", "")
-    print(post_id)
-    post = Post.objects.filter(id=post_id)[0]
-    print(post)
 
-    # Create comment
-    comment = Comment.objects.create(body=text, author=request.user, post=post)
+    # If user is commenting on a form
+    if post_id is not None:
+        post = Post.objects.filter(id=post_id)[0]
+        comment = Comment.objects.create(body=text, author=request.user, post=post)
+    # If user is commenting on a page
+    elif page_id is not None:
+        pass
+    # If user is commenting on an event
+    elif event_id is not None:
+        pass
+    # If user is commenting on a group
+    elif grou_id is not None:
+        pass
+
+    # Save comment to database
     comment.save()
 
     return JsonResponse({"message": "Comment posted successfully."})

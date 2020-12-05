@@ -3,16 +3,22 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
       document.querySelector('#post').addEventListener('click', writePost);
       document.querySelector('#new-post').addEventListener('click', showPostBox);
-      document.querySelector('#cancel').addEventListener('click', hidePostBox);
     } catch(error) {
       console.log("No post form on this page.");
     }
     try {
+      document.querySelector('#cancel').addEventListener('click', hideTextBox);
+    } catch(error) {
+      console.log("No text boxes on this page.");
+    }
+    try {
       document.querySelector('#comment-box').style.display = 'none';
+      document.querySelector('#new-comment').style.display = 'none';
     } catch(error) {
       console.log("No comment form on this page.");
     }
     try {
+      // replace this with friendships
       document.querySelector('#follow').addEventListener('click', follow);
     } catch(error) {
       console.log("No follow button on this page.");
@@ -78,14 +84,27 @@ function writePost(event) {
     event.preventDefault();
   }
 
-
 function showPostBox(event) {
   document.querySelector('#post-box').style.display = 'block';
   event.preventDefault();
 }
 
-function hidePostBox(event) {
-  document.querySelector('#post-box').style.display = 'none';
+function hideTextBox(event) {
+  try {
+    document.querySelector('#post-box').style.display = 'none';
+  } catch(error) {
+    console.log("No post box to close.");
+  }
+  try {
+    document.querySelector('#comment-box').style.display = 'none';
+  } catch(error) {
+    console.log("No comment box to close.");
+  }
+  try {
+    document.querySelector('#edit-box').style.display = 'none';
+  } catch(error) {
+    console.log("No edit box to close.");
+  }
   event.preventDefault();
 }
 
@@ -106,16 +125,25 @@ function showEditBox(event) {
 }
 
 function showCommentBox(event) {
-  postId = event.target.id.slice(7);
-  let commentBody = document.querySelector(`#comment${postId}`);
+  if (event.target.id.slice(0,7) == "comment") {
+    alert("commenting on a post");
+    postId = event.target.id.slice(7);
+  // let commentBody = document.querySelector(`#comment${postId}`);
   let commentAnchor = document.querySelector(`#post${postId}`);
   let commentBox = document.querySelector('#comment-box');
   const parentPost = commentAnchor.parentElement;
   parentPost.append(commentBox);
   commentBox.style.display = 'block';
   commentButton = document.querySelector('#save-comment');
-  commentButton.addEventListener('click', saveComment);
+  commentButton.addEventListener('click', postComment);
   commentButton.dataset.target = `${postId}`;
+  } else if (event.target.id.slice(0,4) == "page") {
+    alert("commenting on a page");
+  } else if (event.target.id.slice(0,5) == "event") {
+    alert("commenting on an event");
+  } else if (event.target.id.slice(0,5) == "group") {
+    alert("commenting on a group");
+  }
   event.preventDefault();
   return false;
 }
@@ -147,9 +175,13 @@ function saveEdit(event) {
   event.preventDefault();
   return false;
 }
-function saveComment(event) {
+function postComment(event) {
   commentBox = document.querySelector('#comment-box');
   commentBody = document.querySelector('#comment-body');
+  let commentAnchor = document.querySelector(`#post${postId}`);
+  const parentPost = commentAnchor.parentElement;
+  let newComment = document.querySelector('#new-comment').innerHTML;
+
   // Save form contents to variable
   commentText = commentBody.value;
   postId = document.querySelector('#save-comment').dataset.target;
@@ -167,11 +199,12 @@ function saveComment(event) {
       alert("Comment not saved.");
     } else {
       response.json();
-      console.log("Need to append the comment to the post here.");
+      // It might be possible to parentPost.append() the new comment using JS instead of reloading the page.
       commentBox.style.display = 'none';
+      parentPost.innerHTML += newComment;
+      parentPost.append(commentText);
     }
   });
-  alert("Need to reload page or have JS update comments that are shown.");
   event.preventDefault();
   return false;
 }

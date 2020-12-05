@@ -21,7 +21,7 @@ urlpatterns = [
     # Edit a post
     path("post/<int:post_id>/edit", views.edit, name="edit_post"),
     # Comment on a post
-    path("post/<int:post_id>/comment", views.comment, name="commenton_post"),
+    path("post/<int:post_id>/comment", views.comment, name="comment_on_post"),
 
     # User profiles
     path("users/<str:username>", views.profile, name="view_profile"),
@@ -42,5 +42,9 @@ urlpatterns = [
     path("events/<int:id>", views.events, name="view_event"),
     # Pages, events, groups: create new
     path("create", utils.create, name="create"),
+    # Pages, events, groups: add comment
+    path("page/<int:page_id>/comment", views.comment, name="comment_on_page"),
+    path("event/<int:event_id>/comment", views.comment, name="comment_on_event"),
+    path("group/<int:group_id>/comment", views.comment, name="comment_on_group"),
 
 ]

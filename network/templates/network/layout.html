@@ -59,14 +59,15 @@
             {% block body %}
             {% endblock %}
         </div>
-        
+
         <div id="comment-box">
             <form id="comment-form">
-                {% csrf_token %}
-                <textarea id="comment-body">Write your comment here.</textarea>
-                <button id="save-comment">Save</button>
+                <!--{% csrf_token %}-->
+                <textarea id="comment-body">Write your comment here.</textarea><br />
+                <input type="submit" id="save-comment" value="Save comment" /><input type="submit" id="cancel" value="Cancel" />
             </form>
         </div>
+        <div id="new-comment"><br /><img class="tinypic" id="new-comment" src="{{ request.user.profile_picture }}" />{{ request.user.first_name }} {{ request.user.last_name }} replied: </div>
 
     </body>
 </html>

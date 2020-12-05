@@ -33,26 +33,31 @@
             {% if listing.date %}Date: {{ listing.date }}<br />{% endif %}
             {{ listing.description|safe }}<br /><br />
             <img src="{{ listing.picture }}" alt="{{ listing.name }}" height="400px" /><br />
+            Comments: <a href="" class="comment" id="{{ view }}{{ listing.id }}">💬</a>
+            <span class="numcomments" id="comments{{ listing.id }}">{{ listing.numcomments }}</span>
             {% for comment in listing.comments %}
                 <br /><img class="tinypic" src="{{ comment.author.profile_picture}}" />{{ comment.author }} ({{ comment.author.first_name }} {{ comment.author.last_name }}) wrote: {{ comment.body }}
             {% endfor %}
             <br />
             {% if fans %}
-                <br />Page owner: {{ listing.owner }}
+                <br />Page owner:
+                <br />{{ listing.owner }}<br />
                 <br />Page fans:
                 {% for person in listing.people %}
                     <br />{{ person.first_name }} {{ person.last_name }}
                 {% endfor %}
             {% endif %}
             {% if attendees %}
-                <br />Event organizer: {{ listing.owner }}
+                <br />Event organizer:
+                <br />{{ listing.owner }}<br />
                 <br />Event attendees:
                 {% for person in listing.people %}
                     <br />{{ person.first_name }} {{ person.last_name }}
                 {% endfor %}
             {% endif %}
             {% if members %}
-                <br />Group leader: {{ listing.owner }}
+                <br />Group leader:
+                <br />{{ listing.owner }}<br />
                 <br />Group members:
                 {% for person in listing.people %}
                     <br />{{ person.first_name }} {{ person.last_name }}
@@ -66,13 +71,12 @@
                 {% if listing.owner == request.user %}
                     <p>
                         <h6><a href="{{ view }}s/{{ listing.id }}">{{ listing.name }}</a></h6>
-                        {{ listing.description }}<br />
+                        {{ listing.description|safe }}<br />
                     </p>
                 <hr />
                 {% endif %}
             {% endfor %}
             <h5>Other {{ view }}s:</h5>
-            Need to filter these to events the current user is not attending / groups the user is not a member of / pages the user does not like.<br />
             <br />
             {% for listing in contents %}
                 {% if listing.owner != request.user %}

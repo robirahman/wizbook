@@ -1,9 +1,7 @@
-Implement comment form to reply to posts.
+
+Refactor comment box to work on pages, events, groups
 
 Implement a button where you can like a page, attend an event, or join a group.
-
-form for comment replies
-js for add comment replies
 
 need to be able to add someone as friend on their profile page
 
@@ -24,11 +22,6 @@ network/ # displays timeline, and links to your groups, events, messages
 network/newsfeed # displays posts from people you are friends with
 network/profile/<str:username> displays profile of user username
 network/messages/ # show an inbox like the email project
-
-List of pages needed:
-
-network/profile/<str:username>/friends # displays all of their friends. maybe just show friends on their profile?
-
 network/events/ # display list of all events
 network/events/<int:id> # display event description, attendees, and comments
 network/groups/ # display list of all groups
@@ -36,23 +29,21 @@ network/groups/<int:id> # display group description, members, and comments
 network/pages/ # display list of all pages
 network/pages/<int:id> # display page description, fans, and comments
 
+List of pages needed:
+network/profile/<str:username>/friends # displays all of their friends. maybe just show friends on their profile?
 
 
 Optional stuff:
 implement friend requests in between friending and friendship
-add notifications
+add notifications for new follows and likes
 show comments on groups/events/pages you follow on your newsfeed
 show someone's pages/events/groups on their profile
 network/calendar/ # show calendar of upcoming events and the next birthday of each of your friends
 Remove CSRF exemptions and implement tokens.
-Implement markdown on posts/comments/pages.
-
+Implement markdown on post/comment/page descriptions.
 Convert picture TextField in User, Page, Event, Group models to URLField
-
-
-Content to add:
-
-Group: Harry Potter Fan Club
-Colin Creevey
-Ginny Weasley
-Neville Longbottom
+Prevent cancel button from reloading page when closing edit/text boxes
+Let users delete pages/events/groups they own
+Adjust date format in Django's server settings {{ birthday|date:"M d, Y" }} https://docs.djangoproject.com/en/dev/ref/settings/#date-format
+Filter "other" to separate events the current user is not attending / groups the user is not a member of / pages the user does not like.
+Make Wizbook look as nice as Facebook.
