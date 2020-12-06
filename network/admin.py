@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import User, Friendship, Message, Page, Post, Event, Event_Attendee, Group, Group_Member, Comment, Like
+from .models import (
+    User, Friendship, Message,
+    Event, Event_Attendee, Group, Group_Member,
+    Post, Page, Comment, Like
+    )
 
 # Register your models here.
 admin.site.register(User)

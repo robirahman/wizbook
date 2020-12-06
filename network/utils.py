@@ -2,29 +2,37 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from .models import User, Friendship, Message, Page, Post, Event, Event_Attendee, Group, Group_Member, Comment, Like
+from .models import (
+    User, Friendship, Message,
+    Event, Event_Attendee, Group, Group_Member,
+    Post, Page, Comment, Like
+    )
 
 
 def get_posts(request, profile=None, friend=None):
     posts = None
-    if profile is not None:
-        # If we're looking at someone's profile, get their posts.
+    if profile is not None:  # Looking at someone's profile
+        # get their posts
         posts = Post.objects.filter(author=profile)
-    elif friend is not None:
-        # If we're looking at our newsfeed, get posts by our friends.
+    elif friend is not None:  # Looking at newsfeed
+        # get posts by user's friends
         print("looking for friendships of: " + str(friend.username))
         friends = get_friends(request, friend)
-        posts = Post.objects.none() # Initialize empty set of posts
+        # Initialize empty set of posts
+        posts = Post.objects.none()
         for author in friends:
             posts = posts | Post.objects.filter(author=author)
-    else:
-        # If we're not looking at our newsfeed or someone's profile, show all posts.
+    else:  # Not looking at our newsfeed or someone's profile
+        # show all posts
         posts = Post.objects.all()
     posts = posts.order_by("-timestamp").all()
     for post in posts:
-        post.numlikes = Like.objects.filter(post=post).count() # count how many likes the post has
-        post.comments = get_comments(post=post) # get all the comments on the post
-        post.numcomments = Comment.objects.filter(post=post).count() # count how many comments the post has
+        # count how many likes the post has
+        post.numlikes = Like.objects.filter(post=post).count()
+        # get all the comments on the post
+        post.comments = get_comments(post=post)
+        # count how many comments the post has
+        post.numcomments = Comment.objects.filter(post=post).count()
     try:
         page_num = request.GET.get('page', 1)
         posts = Paginator(posts, per_page=10).page(page_num)
@@ -36,28 +44,36 @@ def get_posts(request, profile=None, friend=None):
 def get_comments(post=None, page=None, event=None, group=None):
     comments = None
     if post is not None:
-        comments = Comment.objects.filter(post=post) # get comments on the specified post
+        # get comments on the specified post
+        comments = Comment.objects.filter(post=post)
     elif page is not None:
-        comments = Comment.objects.filter(page=page) # get comments on the specified page
+        # get comments on the specified page
+        comments = Comment.objects.filter(page=page)
     elif event is not None:
-        comments = Comment.objects.filter(event=event) # get comments on the specified event
+        # get comments on the specified event
+        comments = Comment.objects.filter(event=event)
     elif group is not None:
-        comments = Comment.objects.filter(group=group) # get comments on the specified group
+        # get comments on the specified group
+        comments = Comment.objects.filter(group=group)
     return comments
 
 
 def get_friends(request, friend):
-    friends = [] # Initialize empty list of friends
+    friends = []  # Initialize empty list of friends
     friendships1 = Friendship.objects.filter(friend2=friend)
     friendships2 = Friendship.objects.filter(friend1=friend)
     for friendship in friendships1:
-        friends.append(friendship.friend1) # Add people who friended you to list
+        # Add people who friended you to the list
+        friends.append(friendship.friend1)
     for friendship in friendships2:
-        friends.append(friendship.friend2) # Add people you friended to list
+        # Add people you friended to the list
+        friends.append(friendship.friend2)
     return friends
 
 
-def getPageEventGroup(request, view, page_id=None, event_id=None, group_id=None):
+def get_peg(request, view, page_id=None, event_id=None, group_id=None):
+    """ Gets a page, event, or group, depending on the type of id."""
+
     id = page_id or event_id or group_id
     contents = None
     listing = None
@@ -92,7 +108,7 @@ def getPageEventGroup(request, view, page_id=None, event_id=None, group_id=None)
         contents = Event.objects.all()
     elif view == "group":
         contents = Group.objects.all()
-    
+
     return render(request, "network/page-event-group.html", {
         "view": view,
         "id": id,
@@ -102,7 +118,6 @@ def getPageEventGroup(request, view, page_id=None, event_id=None, group_id=None)
         "attendees": attendees,
         "members": members
     })
-    
 
 
 def create(request):
@@ -113,22 +128,38 @@ def create(request):
         picture = request.POST["picture"]
         description = request.POST["description"]
         if peg_type == "page":
-            page = Page.objects.create(owner=owner, name=name, picture=picture, description=description)
+            page = Page.objects.create(
+                owner=owner,
+                name=name,
+                picture=picture,
+                description=description
+                )
             page.save()
             id = Page.objects.filter(name=name)[0].id
-            return getPageEventGroup(request, view="page", page_id=id)
+            return get_peg(request, view="page", page_id=id)
         elif peg_type == "event":
             date = request.POST["date"]
             place = request.POST["location"]
-            event = Event.objects.create(owner=owner, name=name, picture=picture, description=description, date=date, place=place)
+            event = Event.objects.create(
+                owner=owner,
+                name=name,
+                picture=picture,
+                description=description,
+                date=date,
+                place=place
+                )
             event.save()
             id = Event.objects.filter(name=name)[0].id
-            return getPageEventGroup(request, view="event", event_id=id)
+            return get_peg(request, view="event", event_id=id)
         elif peg_type == "group":
-            group = Group.objects.create(owner=owner, name=name, picture=picture, description=description)
+            group = Group.objects.create(
+                owner=owner,
+                name=name,
+                picture=picture,
+                description=description
+                )
             group.save()
             id = Group.objects.filter(name=name)[0].id
-            return getPageEventGroup(request, view="group", group_id=id)
+            return get_peg(request, view="group", group_id=id)
     else:
         return HttpResponseRedirect(reverse("index"))
-

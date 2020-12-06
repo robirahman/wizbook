@@ -8,8 +8,12 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Friendship, Message, Page, Post, Event, Event_Attendee, Group, Group_Member, Comment, Like
-from .utils import get_posts, get_comments, get_friends, getPageEventGroup
+from .models import (
+    User, Friendship, Message,
+    Event, Event_Attendee, Group, Group_Member,
+    Post, Page, Comment, Like
+    )
+from .utils import get_posts, get_comments, get_friends, get_peg
 
 
 def index(request):
@@ -85,7 +89,7 @@ def register(request):
         return render(request, "network/register.html")
 
 
-@csrf_exempt # replace with csrf token
+@csrf_exempt  # replace with csrf token
 def profile(request, username):
     user = User.objects.filter(username=username)
     profile_data = user.values()[0]
@@ -97,7 +101,7 @@ def profile(request, username):
         profile_pic = None
     try:
         birthday = profile_data['birthday']
-    except:
+    except KeyError:
         birthday = None
     email = profile_data['email']
     posts = get_posts(request, profile=user[0])
@@ -165,7 +169,7 @@ def compose(request):
     return JsonResponse({"message": "Message sent successfully."}, status=201)
 
 
-@csrf_exempt # replace with csrf token
+@csrf_exempt  # replace with csrf token
 @login_required
 def mailbox(request, mailbox):
 
@@ -187,7 +191,10 @@ def mailbox(request, mailbox):
 
     # Return messages in reverse chronologial order
     messages = messages.order_by("-timestamp").all()
-    return JsonResponse([message.serialize() for message in messages], safe=False)
+    return JsonResponse(
+        [message.serialize() for message in messages],
+        safe=False
+        )
 
 
 @csrf_exempt
@@ -221,20 +228,22 @@ def email(request, email_id):
         }, status=400)
 
 
-@csrf_exempt # replace with csrf token
+@csrf_exempt  # replace with csrf token
 @login_required
 def messages(request):
     return render(request, "network/messages.html")
 
 
 def pages(request, id=None):
-    return getPageEventGroup(request=request, view="page", page_id=id)
+    return get_peg(request=request, view="page", page_id=id)
+
 
 def events(request, id=None):
-    return getPageEventGroup(request=request, view="event", event_id=id)
+    return get_peg(request=request, view="event", event_id=id)
+
 
 def groups(request, id=None):
-    return getPageEventGroup(request=request, view="group", group_id=id)
+    return get_peg(request=request, view="group", group_id=id)
 
 
 @csrf_exempt
@@ -257,6 +266,7 @@ def write(request):
     post.save()
 
     return JsonResponse({"message": "Post saved successfully."}, status=201)
+
 
 @csrf_exempt
 @login_required
@@ -289,13 +299,14 @@ def edit(request, post_id):
             "message": "You cannot edit that post."
             })
 
+
 @csrf_exempt
 @login_required
 def comment(request, post_id=None, page_id=None, event_id=None, group_id=None):
     # Writing a comment must be via POST
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
-    
+
     # Get contents of form
     data = json.loads(request.body)
     text = data.get("text", "")
@@ -303,24 +314,41 @@ def comment(request, post_id=None, page_id=None, event_id=None, group_id=None):
     # If user is commenting on a form
     if post_id is not None:
         post = Post.objects.filter(id=post_id)[0]
-        comment = Comment.objects.create(body=text, author=request.user, post=post)
+        comment = Comment.objects.create(
+            body=text,
+            author=request.user,
+            post=post
+            )
     # If user is commenting on a page
     elif page_id is not None:
         page = Page.objects.filter(id=page_id)[0]
-        comment = Comment.objects.create(body=text, author=request.user, page=page)
+        comment = Comment.objects.create(
+            body=text,
+            author=request.user,
+            page=page
+            )
     # If user is commenting on an event
     elif event_id is not None:
         event = Event.objects.filter(id=event_id)[0]
-        comment = Comment.objects.create(body=text, author=request.user, event=event)
+        comment = Comment.objects.create(
+            body=text,
+            author=request.user,
+            event=event
+            )
     # If user is commenting on a group
     elif group_id is not None:
         group = Group.objects.filter(id=page_id)[0]
-        comment = Comment.objects.create(body=text, author=request.user, group=group)
+        comment = Comment.objects.create(
+            body=text,
+            author=request.user,
+            group=group
+            )
 
     # Save comment to database
     comment.save()
 
     return JsonResponse({"message": "Comment posted successfully."})
+
 
 @login_required
 def like(request, post_id):
@@ -352,15 +380,25 @@ def friends_list(request, username):
 @csrf_exempt
 @login_required
 def add_friend(request, username):
-    person = User.objects.filter(username=username)[0] # the person we are viewing
-    friends = get_friends(request, person) # friends is all of the current user's friends
+    """ Toggles friendship with the target user. """
+    # query for the person we are viewing
+    person = User.objects.filter(username=username)[0]
+    # get all of the current user's friends
+    friends = get_friends(request, person)
     if request.user in friends:
-        friendship = Friendship.objects.filter(friend1=request.user, friend2=person) | Friendship.objects.filter(friend1=person, friend2=request.user)
+        set1 = Friendship.objects.filter(friend1=request.user, friend2=person)
+        set2 = Friendship.objects.filter(friend1=person, friend2=request.user)
+        friendship = set1 | set2
         friendship.delete()
         friend = False
     else:
-        friendship = Friendship.objects.create(friend1=request.user, friend2=person)
+        friendship = Friendship.objects.create(
+            friend1=request.user,
+            friend2=person
+            )
         friendship.save()
         friend = True
-    return HttpResponseRedirect(reverse("view_profile", kwargs={"username": person.username}))
-    
+    return HttpResponseRedirect(reverse("view_profile", kwargs={
+        "username": person.username
+        })
+        )
