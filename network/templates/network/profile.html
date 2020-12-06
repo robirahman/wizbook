@@ -13,6 +13,9 @@
         {% if email %}Email address: {{ email }}<br />{% endif %}
         {% if birthday %}Birthday: {{ birthday }}<br />{% endif %}
         {% if request.user.username != username %}<a href="{% url 'add_friend' username %}"><button>{% if friend %}Unfriend{% else %}Add friend{% endif %}</button></a>{% endif %}
+        <div id="friends">{{ firstname }} {{ lastname }}'s friends:<br />
+            {% for friend in friends %}{{ friend.first_name }} {{ friend.last_name }}<br />{% endfor %}
+        </div>
     </div>
     {% if posts %}
         <div id="posts">

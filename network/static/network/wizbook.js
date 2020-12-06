@@ -126,7 +126,6 @@ function showEditBox(event) {
 
 function showCommentBox(event) {
   if (event.target.id.slice(0,7) == "comment") {
-    alert("commenting on a post");
     postId = event.target.id.slice(7);
   // let commentBody = document.querySelector(`#comment${postId}`);
   let commentAnchor = document.querySelector(`#post${postId}`);

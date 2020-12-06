@@ -1,21 +1,17 @@
-
-Refactor comment box to work on pages, events, groups
-
-Implement a button where you can like a page, attend an event, or join a group.
-
-
-
-Wizbook
-
+Wizbook features:
 Timeline
 Profiles
 Friends
 Events
 Groups
 Messages
-Calendar, birthdays?
 
-List of pages implemented:
+To-do list:
+Should increment the comment number using JS when posting a comment.
+Refactor comment box to work on pages, events, groups
+Implement a button where you can like a page, attend an event, or join a group.
+
+Pages implemented:
 network/ # displays timeline, and links to your groups, events, messages
 network/newsfeed # displays posts from people you are friends with
 network/profile/<str:username> # displays profile of user username
@@ -28,15 +24,13 @@ network/groups/<int:id> # display group description, members, and comments
 network/pages/ # display list of all pages
 network/pages/<int:id> # display page description, fans, and comments
 
-List of pages needed:
-network/profile/<str:username>/friends # displays all of their friends. maybe just show friends on their profile?
-
 
 Optional stuff:
-implement friend requests in between friending and friendship
-add notifications for new follows and likes
-show comments on groups/events/pages you follow on your newsfeed
-show someone's pages/events/groups on their profile
+Implement friend requests in between clicking Friend button and becoming a friend.
+Add show/hide button for friend list on user profiles.
+Add notifications for new follows and likes.
+Include comments that were posted on groups/events/pages you follow on your newsfeed.
+Show someone's pages/events/groups on their profile.
 network/calendar/ # show calendar of upcoming events and the next birthday of each of your friends
 Remove CSRF exemptions and implement tokens.
 Implement markdown on post/comment/page descriptions.

@@ -106,6 +106,7 @@ def profile(request, username):
     email = profile_data['email']
     posts = get_posts(request, profile=user[0])
     friend = request.user in get_friends(request, user.values()[0]["id"])
+    friends = get_friends(request, user[0])
     return render(request, "network/profile.html", {
         "username": username,
         "firstname": firstname,
@@ -114,6 +115,7 @@ def profile(request, username):
         "profile_pic": profile_pic,
         "email": email,
         "friend": friend,
+        "friends": friends,
         "posts": posts
     })
 

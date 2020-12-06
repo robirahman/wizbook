@@ -25,8 +25,6 @@ urlpatterns = [
 
     # View user profiles
     path("users/<str:username>", views.profile, name="view_profile"),
-    # See user's friend list
-    path("users/<str:username>", views.friends_list, name="friends_list"),
     # Add/remove friendship
     path("users/<str:username>/add", views.add_friend, name="add_friend"),
 
