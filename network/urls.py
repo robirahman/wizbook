@@ -46,17 +46,17 @@ urlpatterns = [
     path("create", utils.create, name="create"),
     # Pages, events, groups: add comment
     path(
-        "page/<int:page_id>/comment",
+        "pages/<int:page_id>/comment",
         views.comment,
         name="comment_on_page"
         ),
     path(
-        "event/<int:event_id>/comment",
+        "events/<int:event_id>/comment",
         views.comment,
         name="comment_on_event"
         ),
     path(
-        "group/<int:group_id>/comment",
+        "groups/<int:group_id>/comment",
         views.comment,
         name="comment_on_group"
         ),

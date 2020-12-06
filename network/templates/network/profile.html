@@ -23,7 +23,7 @@
                 <div class="post">
                     <img class="smallpic" src="{{ post.author.profile_picture }}" />
                     At {{ post.timestamp }}, <a href="{% url 'view_profile' post.author.username %}">{{ post.author.username }}</a> ({{ post.author.first_name }} {{ post.author.last_name }}) wrote:<br />
-                    <span id="post{{ post.id}}">{{ post.body }}</span><br />
+                    <span id="post{{ post.id }}">{{ post.body }}</span><br />
                     {% if user == post.author %}
                         <a href="" class="edit" id="edit{{ post.id }}">✏️</a>
                     {% else %}
@@ -31,9 +31,9 @@
                     {% endif %}
                     <a class="likes" id="likes{{ post.id }}">{{ post.numlikes }}</a> users like this. | 
                     <a href="" class="comment" id="comment{{ post.id }}">💬</a>
-                    <a class="comments" id="comments{{ post.id }}">{{ post.numcomments }}</a><br />
+                    <span class="numcomments" id="comments{{ post.id }}">{{ post.numcomments }}</span><br />
                     {% for comment in post.comments %}
-                        <br /><img class="tinypic" src="{{ comment.author.profile_picture}}" />{{ comment.author.first_name }} {{ comment.author.last_name }} replied: {{ comment.body }}
+                        <br /><img class="tinypic" src="{{ comment.author.profile_picture }}" />{{ comment.author.first_name }} {{ comment.author.last_name }} replied: {{ comment.body }}
                     {% endfor %}
                 </div>
             {% endfor %}
@@ -51,10 +51,11 @@
         </div>
         <div id="edit-box">
             <form id="edit-form">
-                {% csrf_token %}
+                <!--{% csrf_token %}-->
                 <textarea id="edit-body">
                     The innerHTML of this textarea is replaced with the body of the edited post.
-                </textarea> <button id="save-edit">Save</button>
+                </textarea>
+                <br /><input type="submit" id="save-edit" value="Save changes" /><input type="submit" id="cancel" value="Cancel" />
             </form>
         </div>
     {% endif %}

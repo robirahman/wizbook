@@ -313,7 +313,7 @@ def comment(request, post_id=None, page_id=None, event_id=None, group_id=None):
     data = json.loads(request.body)
     text = data.get("text", "")
 
-    # If user is commenting on a form
+    # If user is commenting on a post
     if post_id is not None:
         post = Post.objects.filter(id=post_id)[0]
         comment = Comment.objects.create(
@@ -339,7 +339,7 @@ def comment(request, post_id=None, page_id=None, event_id=None, group_id=None):
             )
     # If user is commenting on a group
     elif group_id is not None:
-        group = Group.objects.filter(id=page_id)[0]
+        group = Group.objects.filter(id=group_id)[0]
         comment = Comment.objects.create(
             body=text,
             author=request.user,

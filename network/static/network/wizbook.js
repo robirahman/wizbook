@@ -18,13 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log("No comment form on this page.");
     }
     try {
-      // replace this with friendships
-      document.querySelector('#follow').addEventListener('click', follow);
-    } catch(error) {
-      console.log("No follow button on this page.");
-      // console.log(error);
-    }
-    try {
       document.querySelectorAll('.like').forEach(heart => {
         heart.addEventListener('click', like)
       });
@@ -63,26 +56,26 @@ document.addEventListener('DOMContentLoaded', function() {
   
 
 function writePost(event) {
-    // Save form contents to variable
-    postBody = document.querySelector('#post-body').value;
-    
-    // POST message to the API to save into database
-    fetch('/post', {
-      method: 'POST',
-      body: JSON.stringify({
-          body: postBody
-      })
+  // Save form contents to variable
+  postBody = document.querySelector('#post-body').value;
+  
+  // POST message to the API to save into database
+  fetch('/post', {
+    method: 'POST',
+    body: JSON.stringify({
+        body: postBody
     })
-    .then(response => {
-      if (response.status === 400) {
-        alert("Message was not posted.");
-      } else {
-        response.json();
-        window.location.href = "";
-      }
-    });
-    event.preventDefault();
-  }
+  })
+  .then(response => {
+    if (response.status === 400) {
+      alert("Message was not posted.");
+    } else {
+      response.json();
+      window.location.href = "";
+    }
+  });
+  event.preventDefault();
+}
 
 function showPostBox(event) {
   document.querySelector('#post-box').style.display = 'block';
@@ -127,21 +120,45 @@ function showEditBox(event) {
 function showCommentBox(event) {
   if (event.target.id.slice(0,7) == "comment") {
     postId = event.target.id.slice(7);
-  // let commentBody = document.querySelector(`#comment${postId}`);
-  let commentAnchor = document.querySelector(`#post${postId}`);
-  let commentBox = document.querySelector('#comment-box');
-  const parentPost = commentAnchor.parentElement;
-  parentPost.append(commentBox);
-  commentBox.style.display = 'block';
-  commentButton = document.querySelector('#save-comment');
-  commentButton.addEventListener('click', postComment);
-  commentButton.dataset.target = `${postId}`;
+    // let commentBody = document.querySelector(`#comment${postId}`);
+    let commentAnchor = document.querySelector(`#post${postId}`);
+    let commentBox = document.querySelector('#comment-box');
+    const parentPost = commentAnchor.parentElement;
+    parentPost.append(commentBox);
+    commentBox.style.display = 'block';
+    commentButton = document.querySelector('#save-comment');
+    commentButton.addEventListener('click', postComment);
+    commentButton.dataset.target = `${postId}`;
   } else if (event.target.id.slice(0,4) == "page") {
-    alert("commenting on a page");
+    pageId = event.target.id.slice(4);
+    let commentBox = document.querySelector('#comment-box');
+    commentAnchor = document.querySelector('#numcomments');
+    const parentPost = commentAnchor.parentElement;
+    parentPost.append(commentBox);
+    commentBox.style.display = 'block';
+    commentButton = document.querySelector('#save-comment');
+    commentButton.addEventListener('click', pegComment);
+    commentButton.dataset.target = `page${pageId}`;
   } else if (event.target.id.slice(0,5) == "event") {
-    alert("commenting on an event");
+    eventId = event.target.id.slice(5);
+    let commentBox = document.querySelector('#comment-box');
+    commentAnchor = document.querySelector('#numcomments');
+    const parentPost = commentAnchor.parentElement;
+    parentPost.append(commentBox);
+    commentBox.style.display = 'block';
+    commentButton = document.querySelector('#save-comment');
+    commentButton.addEventListener('click', pegComment);
+    commentButton.dataset.target = `event${eventId}`;
   } else if (event.target.id.slice(0,5) == "group") {
-    alert("commenting on a group");
+    groupId = event.target.id.slice(5);
+    let commentBox = document.querySelector('#comment-box');
+    commentAnchor = document.querySelector('#numcomments');
+    const parentPost = commentAnchor.parentElement;
+    parentPost.append(commentBox);
+    commentBox.style.display = 'block';
+    commentButton = document.querySelector('#save-comment');
+    commentButton.addEventListener('click', pegComment);
+    commentButton.dataset.target = `group${groupId}`;
   }
   event.preventDefault();
   return false;
@@ -174,6 +191,7 @@ function saveEdit(event) {
   event.preventDefault();
   return false;
 }
+
 function postComment(event) {
   commentBox = document.querySelector('#comment-box');
   commentBody = document.querySelector('#comment-body');
@@ -198,12 +216,59 @@ function postComment(event) {
       alert("Comment not saved.");
     } else {
       response.json();
-      // It might be possible to parentPost.append() the new comment using JS instead of reloading the page.
       commentBox.style.display = 'none';
       parentPost.innerHTML += newComment;
       parentPost.append(commentText);
     }
   });
+  event.preventDefault();
+  return false;
+}
+
+function pegComment(event) {
+  commentBox = document.querySelector('#comment-box');
+  commentBody = document.querySelector('#comment-body');
+  commentAnchor = document.querySelector('#numcomments');
+  const parentPost = commentAnchor.parentElement;
+  let newComment = document.querySelector('#new-comment').innerHTML;
+  commentText = commentBody.value;
+  commentButton = document.querySelector('#save-comment');
+  peg = commentButton.dataset.target;
+  alert(peg);
+  if (peg.slice(0,4) == "page") {
+    alert("commenting on a page");
+    var pegType = "page";
+    var pegId = peg.slice(4);
+  } else if (peg.slice(0,5) == "event") {
+    alert("commenting on an event");
+    var pegType = "event";
+    var pegId = peg.slice(5);
+  } else if (peg.slice(0,5) == "group") {
+    alert("commenting on a group");
+    var pegType = "group";
+    var pegId = peg.slice(5);
+  }
+  alert(`/${pegType}/${pegId}/comment`);
+
+  // POST to the API to save the comment
+  fetch(`${pegId}/comment`, {
+    method: 'POST',
+    body: JSON.stringify({
+      text: commentText,
+      id: pegId
+    })
+  })
+  .then(response => {
+    if (response.status === 400) {
+      alert("Comment not saved.");
+    } else {
+      response.json();
+      commentBox.style.display = 'none';
+      parentPost.innerHTML += newComment;
+      parentPost.append(commentText);
+    }
+  });
+  
   event.preventDefault();
   return false;
 }
