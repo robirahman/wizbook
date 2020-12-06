@@ -3,8 +3,6 @@ Refactor comment box to work on pages, events, groups
 
 Implement a button where you can like a page, attend an event, or join a group.
 
-need to be able to add someone as friend on their profile page
-
 
 
 Wizbook
@@ -20,7 +18,8 @@ Calendar, birthdays?
 List of pages implemented:
 network/ # displays timeline, and links to your groups, events, messages
 network/newsfeed # displays posts from people you are friends with
-network/profile/<str:username> displays profile of user username
+network/profile/<str:username> # displays profile of user username
+network/profile/<str:username>/add # adds/removes them as friend, then redirects to profile
 network/messages/ # show an inbox like the email project
 network/events/ # display list of all events
 network/events/<int:id> # display event description, attendees, and comments

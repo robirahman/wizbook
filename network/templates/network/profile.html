@@ -12,6 +12,7 @@
         {% if firstname and lastname %}{{ firstname }} {{ lastname }}<br />{% endif %}
         {% if email %}Email address: {{ email }}<br />{% endif %}
         {% if birthday %}Birthday: {{ birthday }}<br />{% endif %}
+        <a href="{% url 'add_friend' username %}"><button>{% if friend %}Unfriend{% else %}Add friend{% endif %}</button></a>
     </div>
     {% if posts %}
         <div id="posts">

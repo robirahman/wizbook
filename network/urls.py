@@ -23,8 +23,12 @@ urlpatterns = [
     # Comment on a post
     path("post/<int:post_id>/comment", views.comment, name="comment_on_post"),
 
-    # User profiles
+    # View user profiles
     path("users/<str:username>", views.profile, name="view_profile"),
+    # See user's friend list
+    path("users/<str:username>", views.friends_list, name="friends_list"),
+    # Add/remove friendship
+    path("users/<str:username>/add", views.add_friend, name="add_friend"),
 
     # Messaging: view inbox/sent/archive
     path("messages", views.messages, name="messages"),

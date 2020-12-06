@@ -13,13 +13,7 @@ def get_posts(request, profile=None, friend=None):
     elif friend is not None:
         # If we're looking at our newsfeed, get posts by our friends.
         print("looking for friendships of: " + str(friend.username))
-        friendships1 = Friendship.objects.filter(friend2=friend)
-        friendships2 = Friendship.objects.filter(friend1=friend)
-        friends = [] # Initialize empty list of friends
-        for friendship in friendships1:
-            friends.append(friendship.friend1) # Add people who friended you to list
-        for friendship in friendships2:
-            friends.append(friendship.friend2) # Add people you friended to list
+        friends = get_friends(request, friend)
         posts = Post.objects.none() # Initialize empty set of posts
         for author in friends:
             posts = posts | Post.objects.filter(author=author)
@@ -50,6 +44,17 @@ def get_comments(post=None, page=None, event=None, group=None):
     elif group is not None:
         comments = Comment.objects.filter(group=group) # get comments on the specified group
     return comments
+
+
+def get_friends(request, friend):
+    friends = [] # Initialize empty list of friends
+    friendships1 = Friendship.objects.filter(friend2=friend)
+    friendships2 = Friendship.objects.filter(friend1=friend)
+    for friendship in friendships1:
+        friends.append(friendship.friend1) # Add people who friended you to list
+    for friendship in friendships2:
+        friends.append(friendship.friend2) # Add people you friended to list
+    return friends
 
 
 def getPageEventGroup(request, view, page_id=None, event_id=None, group_id=None):

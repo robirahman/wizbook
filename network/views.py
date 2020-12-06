@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Friendship, Message, Page, Post, Event, Event_Attendee, Group, Group_Member, Comment, Like
-from .utils import get_posts, get_comments, getPageEventGroup
+from .utils import get_posts, get_comments, get_friends, getPageEventGroup
 
 
 def index(request):
@@ -85,7 +85,7 @@ def register(request):
         return render(request, "network/register.html")
 
 
-@csrf_exempt # not needed?
+@csrf_exempt # replace with csrf token
 def profile(request, username):
     user = User.objects.filter(username=username)
     profile_data = user.values()[0]
@@ -101,6 +101,7 @@ def profile(request, username):
         birthday = None
     email = profile_data['email']
     posts = get_posts(request, profile=user[0])
+    friend = request.user in get_friends(request, user.values()[0]["id"])
     return render(request, "network/profile.html", {
         "username": username,
         "firstname": firstname,
@@ -108,6 +109,7 @@ def profile(request, username):
         "birthday": birthday,
         "profile_pic": profile_pic,
         "email": email,
+        "friend": friend,
         "posts": posts
     })
 
@@ -219,7 +221,7 @@ def email(request, email_id):
         }, status=400)
 
 
-@csrf_exempt # add csrf token
+@csrf_exempt # replace with csrf token
 @login_required
 def messages(request):
     return render(request, "network/messages.html")
@@ -304,13 +306,16 @@ def comment(request, post_id=None, page_id=None, event_id=None, group_id=None):
         comment = Comment.objects.create(body=text, author=request.user, post=post)
     # If user is commenting on a page
     elif page_id is not None:
-        pass
+        page = Page.objects.filter(id=page_id)[0]
+        comment = Comment.objects.create(body=text, author=request.user, page=page)
     # If user is commenting on an event
     elif event_id is not None:
-        pass
+        event = Event.objects.filter(id=event_id)[0]
+        comment = Comment.objects.create(body=text, author=request.user, event=event)
     # If user is commenting on a group
-    elif grou_id is not None:
-        pass
+    elif group_id is not None:
+        group = Group.objects.filter(id=page_id)[0]
+        comment = Comment.objects.create(body=text, author=request.user, group=group)
 
     # Save comment to database
     comment.save()
@@ -338,3 +343,24 @@ def like(request, post_id):
     new_likes = Like.objects.filter(post=target).count()
     return JsonResponse({"result": result, "newLikes": new_likes}, status=200)
 
+
+@login_required
+def friends_list(request, username):
+    pass
+
+
+@csrf_exempt
+@login_required
+def add_friend(request, username):
+    person = User.objects.filter(username=username)[0] # the person we are viewing
+    friends = get_friends(request, person) # friends is all of the current user's friends
+    if request.user in friends:
+        friendship = Friendship.objects.filter(friend1=request.user, friend2=person) | Friendship.objects.filter(friend1=person, friend2=request.user)
+        friendship.delete()
+        friend = False
+    else:
+        friendship = Friendship.objects.create(friend1=request.user, friend2=person)
+        friendship.save()
+        friend = True
+    return HttpResponseRedirect(reverse("view_profile", kwargs={"username": person.username}))
+    
