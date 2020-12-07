@@ -404,3 +404,47 @@ def add_friend(request, username):
         "username": person.username
         })
         )
+
+
+@csrf_exempt
+@login_required
+def like_attend_join(request, page_id=None, event_id=None, group_id=None):
+    """ Like page, attend event, or join group """
+    # query for the person we are viewing
+    person = request.user
+    if page_id is not None:
+        page = Page.objects.get(pk=page_id)
+        likes = Like.objects.filter(page=page, liker=person).count()
+        if likes == 0:
+            like = Like.objects.create(page=page, liker=person)
+            like.save()
+            fan = True
+        else:
+            like = Like.objects.get(page=page, liker=person)
+            like.delete()
+            fan = False
+        return HttpResponseRedirect(reverse("view_page", kwargs={"id": page_id}))
+    if event_id is not None:
+        event = Event.objects.get(pk=event_id)
+        attendance = Event_Attendee.objects.filter(attendee=person, event=event).count()
+        if attendance == 0:
+            event_attendee = Event_Attendee.objects.create(attendee=person, event=event)
+            event_attendee.save()
+            attendee = True
+        else:
+            event_attendee = Event_Attendee.objects.get(attendee=person, event=event)
+            event_attendee.delete()
+            attendee = False
+        return HttpResponseRedirect(reverse("view_event", kwargs={"id": event_id}))
+    if group_id is not None:
+        group = Group.objects.get(pk=group_id)
+        membership = Group_Member.objects.filter(member=person, group=group).count()
+        if membership == 0:
+            group_member = Group_Member.objects.create(member=person, group=group)
+            group_member.save()
+            member = True
+        else:
+            group_member = Group_Member.objects.get(member=person, group=group)
+            group_member.delete()
+            member = False
+        return HttpResponseRedirect(reverse("view_group", kwargs={"id": group_id}))

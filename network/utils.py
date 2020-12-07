@@ -77,9 +77,34 @@ def get_peg(request, view, page_id=None, event_id=None, group_id=None):
     id = page_id or event_id or group_id
     contents = None
     listing = None
+    fan = False
+    attendee = False
+    member = False
     fans = False
     attendees = False
     members = False
+
+    if page_id is not None:
+        page = Page.objects.get(pk=page_id)
+        likes = Like.objects.filter(page=page, liker=request.user).count()
+        if likes == 0:
+            fan = False
+        else:
+            fan = True
+    if event_id is not None:
+        event = Event.objects.get(pk=event_id)
+        attendance = Event_Attendee.objects.filter(attendee=request.user, event=event).count()
+        if attendance == 0:
+            attendee = False
+        else:
+            attendee = True
+    if group_id is not None:
+        group = Group.objects.get(pk=group_id)
+        membership = Group_Member.objects.filter(member=request.user, group=group).count()
+        if membership == 0:
+            member = False
+        else:
+            member = True
 
     if page_id is not None:
         listing = Page.objects.get(id=id)
@@ -114,6 +139,9 @@ def get_peg(request, view, page_id=None, event_id=None, group_id=None):
         "id": id,
         "listing": listing,
         "contents": contents,
+        "fan": fan,
+        "attendee": attendee,
+        "member": member,
         "fans": fans,
         "attendees": attendees,
         "members": members

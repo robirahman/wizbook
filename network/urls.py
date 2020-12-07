@@ -38,10 +38,10 @@ urlpatterns = [
     # Pages, events, groups: view
     path("pages", views.pages, name="pages"),
     path("pages/<int:id>", views.pages, name="view_page"),
-    path("groups", views.groups, name="groups"),
-    path("groups/<int:id>", views.groups, name="view_group"),
     path("events", views.events, name="events"),
     path("events/<int:id>", views.events, name="view_event"),
+    path("groups", views.groups, name="groups"),
+    path("groups/<int:id>", views.groups, name="view_group"),
     # Pages, events, groups: create new
     path("create", utils.create, name="create"),
     # Pages, events, groups: add comment
@@ -59,6 +59,22 @@ urlpatterns = [
         "groups/<int:group_id>/comment",
         views.comment,
         name="comment_on_group"
+        ),
+    # Pages, events, groups: like, attend, join
+    path(
+        "pages/<int:page_id>/like",
+        views.like_attend_join,
+        name="like_page"
+        ),
+    path(
+        "events/<int:event_id>/attend",
+        views.like_attend_join,
+        name="attend_event"
+        ),
+    path(
+        "groups/<int:group_id>/join",
+        views.like_attend_join,
+        name="join_group"
         ),
 
 ]

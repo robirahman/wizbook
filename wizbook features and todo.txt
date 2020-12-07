@@ -8,8 +8,8 @@ Messages
 
 To-do list:
 Should increment the comment number using JS when posting a comment.
-Refactor comment box to work on pages, events, groups
-Implement a button where you can like a page, attend an event, or join a group.
+Refactor and combine JS functions postComment and pegComment. Refactor showCommentBox to simplify.
+Show page/event/group owner even when there are no fans/attendees/members.
 
 Pages implemented:
 network/ # displays timeline, and links to your groups, events, messages
@@ -26,12 +26,12 @@ network/pages/<int:id> # display page description, fans, and comments
 
 
 Optional stuff:
+network/calendar/ # show calendar of upcoming events and the next birthday of each of your friends
 Implement friend requests in between clicking Friend button and becoming a friend.
 Add show/hide button for friend list on user profiles.
 Add notifications for new follows and likes.
 Include comments that were posted on groups/events/pages you follow on your newsfeed.
 Show someone's pages/events/groups on their profile.
-network/calendar/ # show calendar of upcoming events and the next birthday of each of your friends
 Remove CSRF exemptions and implement tokens.
 Implement markdown on post/comment/page descriptions.
 Convert picture TextField in User, Page, Event, Group models to URLField

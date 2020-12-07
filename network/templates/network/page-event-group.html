@@ -65,6 +65,10 @@
                     <br />{{ person.first_name }} {{ person.last_name }}
                 {% endfor %}
             {% endif %}
+            <br /><br />
+            {% if view == "page" %}<a href="{% url 'like_page' listing.id %}">{% if fan %}Unlike page{% else %}Like page{% endif %}</a>{% endif %}
+            {% if view == "event" %}<a href="{% url 'attend_event' listing.id %}">{% if attendee %}Leave event{% else %}Attend event{% endif %}</a>{% endif %}
+            {% if view == "group" %}<a href="{% url 'join_group' listing.id %}">{% if member %}Leave group{% else %}Join group{% endif %}</a>{% endif %}
         {% else %}
             <h3>{% if view == "page" %}Pages{% elif view == "event" %}Events{% elif view == "groups" %}Groups{% endif %}</h3>
             <a href="" id="create">Create new {{ view }}</a><br />
