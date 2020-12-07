@@ -423,28 +423,55 @@ def like_attend_join(request, page_id=None, event_id=None, group_id=None):
             like = Like.objects.get(page=page, liker=person)
             like.delete()
             fan = False
-        return HttpResponseRedirect(reverse("view_page", kwargs={"id": page_id}))
+        return HttpResponseRedirect(reverse(
+            "view_page",
+            kwargs={"id": page_id}
+            ))
     if event_id is not None:
         event = Event.objects.get(pk=event_id)
-        attendance = Event_Attendee.objects.filter(attendee=person, event=event).count()
-        if attendance == 0:
-            event_attendee = Event_Attendee.objects.create(attendee=person, event=event)
+        attendance = Event_Attendee.objects.filter(
+            attendee=person,
+            event=event
+            )
+        if attendance.count() == 0:
+            event_attendee = Event_Attendee.objects.create(
+                attendee=person,
+                event=event
+                )
             event_attendee.save()
             attendee = True
         else:
-            event_attendee = Event_Attendee.objects.get(attendee=person, event=event)
+            event_attendee = Event_Attendee.objects.get(
+                attendee=person,
+                event=event
+                )
             event_attendee.delete()
             attendee = False
-        return HttpResponseRedirect(reverse("view_event", kwargs={"id": event_id}))
+        return HttpResponseRedirect(reverse(
+            "view_event",
+            kwargs={"id": event_id}
+            ))
     if group_id is not None:
         group = Group.objects.get(pk=group_id)
-        membership = Group_Member.objects.filter(member=person, group=group).count()
-        if membership == 0:
-            group_member = Group_Member.objects.create(member=person, group=group)
+        membership = Group_Member.objects.filter(
+            member=person,
+            group=group
+            )
+        if membership.count() == 0:
+            group_member = Group_Member.objects.create(
+                member=person,
+                group=group
+                )
             group_member.save()
             member = True
         else:
-            group_member = Group_Member.objects.get(member=person, group=group)
+            group_member = Group_Member.objects.get(
+                member=person,
+                group=group
+                )
             group_member.delete()
             member = False
-        return HttpResponseRedirect(reverse("view_group", kwargs={"id": group_id}))
+        return HttpResponseRedirect(reverse(
+            "view_group",
+            kwargs={"id": group_id}
+            ))
